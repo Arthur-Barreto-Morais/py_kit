@@ -3,6 +3,7 @@ import os
 from siesta.file_creator import create
 from siesta.file_creator import options as opt
 from siesta.tools import chemical
+from siesta.tools import k_point
 
 print("Choose the program:")
 print("1 - SIESTA")
@@ -29,7 +30,7 @@ if programa == "1":
                 args = parser.parse_args(shlex.split(linha))
                 break
             except SystemExit:
-                print("\nNão deu certo, tente de novo.")
+                print("\nERROR.")
 
         with open("Arguments.txt", 'w') as f:
             for key, value in vars(args).items():
@@ -44,8 +45,27 @@ if programa == "1":
             pass
 
     elif escolha == "2":
-        print("K_point ainda não implementado.")
+        parser = k_point.get_parser()
+        parser.print_help()
 
+        while True:
+            linha = input("\nChoose the arguments: ")
+            try:
+                args = parser.parse_args(shlex.split(linha))
+                break
+            except SystemExit:
+                print("\nERROR.")
+
+        with open("Arguments_kp.txt", 'w') as f:
+            for key, value in vars(args).items():
+                f.write(f"{key}={value}\n")
+
+        k_point.k_point(args)
+
+        for i, kp in enumerate(args.k_points):
+            dir_kp = os.path.join("kp",f"kp_{kp}")
+            chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_kp, path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/")
+        
     elif escolha == "3":
         print("path_finder ainda não implementado.")
 
