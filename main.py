@@ -39,6 +39,9 @@ if programa == "1":
 
         if args.elements is not None:
             chemical.psml_find(fdf_file = args.label + ".fdf", dir = os.getcwd(), path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/")
+        
+        if args.type == "bands":
+            pass
 
     elif escolha == "2":
         print("K_point ainda não implementado.")
