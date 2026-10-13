@@ -2,11 +2,15 @@ import os
 import shutil
 import subprocess
 import argparse as arg
+from . import chemical
 
-def k_point(args):
+def k_point(args, path_psml):
 
     create_dir(args)
 
+    for kp in args.k_points:
+        dir_kp = os.path.join("kp",f"kp_{kp}")
+        chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_kp, path_psml = path_psml)
     run(args)
 
     return args

@@ -63,7 +63,7 @@ if programa == "1":
             for key, value in vars(args).items():
                 f.write(f"{key}={value}\n")
 
-        k_point.k_point(args)
+        k_point.k_point(args, path_psml)
 
         for i, kp in enumerate(args.k_points):
             dir_kp = os.path.join("kp",f"kp_{kp}")
