@@ -68,7 +68,7 @@ class Siesta(Calculator):
         os.environ["OMP_NUM_THREADS"] = "1"
 
         fdf_aux = os.path.join(self.image_dir,self.label_name + ".fdf")
-        out_aux = os.path.join(self.image_dir,self.label_name + ".out")
+        out_aux = os.path.join(self.image_dir,"log.out")
         
         with open(out_aux, 'w') as f_out, open(fdf_aux, 'r') as f_in:
             subprocess.run(
