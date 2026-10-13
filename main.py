@@ -87,15 +87,8 @@ if programa == "1":
         with open("Arguments_neb.txt", 'w') as f:
             for key, value in vars(args).items():
                 f.write(f"{key}={value}\n")   
-
-        print(args)
-        print(args.num_images)
-        print(range(args.num_images))
-        for i in range(args.num_images):
-            dir_neb = os.path.join("neb",f'image_{i}')
-            chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_neb, path_psml = path_psml)
         
-        neb.neb_code(args)    
+        neb.neb_code(args, path_psml)    
 
     else:
         print("Opção inválida.")

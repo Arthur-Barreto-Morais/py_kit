@@ -7,11 +7,14 @@ from ase.io import read as ase_read, write as ase_write
 from ase.mep import NEB, DyNEB
 from ase.optimize import BFGS
 
-def neb_code(args):
+def neb_code(args, path_psml):
 
     Images, neb_file = Create_Images(args)
 
     Create_dir(args, Images)
+
+    for i in range(args.num_images):
+        chemical.psml_find(fdf_file=args.label + ".fdf", dir=os.path.join("neb", f"image_{i}"), path_psml=path_psml)
 
     Images = run_calc(args, Images)
 
