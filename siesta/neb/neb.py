@@ -27,7 +27,7 @@ def neb_code(args):
 def get_parser():
     parser = arg.ArgumentParser(prog = "NEB_Code", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used for NEB calculations", epilog= """Some Examples: """)
     parser = arg.ArgumentParser()
-    parser.add_argument("-f", dest = "label", type = str, required = True, help = "Label of file")
+    parser.add_argument("-l", dest = "label", type = str, required = True, help = "Label of file")
     parser.add_argument("-n", dest = "num_images", type = int, required = True, help = "Number of Images")
     parser.add_argument("-np", dest = "n_proc", type = int, required = True, help = "Number of Processors")
     parser.add_argument("-ci", dest = "CI_NEB", required= False, action = "store_true", help = "Enable CI-NEB calculations (Default False)")
