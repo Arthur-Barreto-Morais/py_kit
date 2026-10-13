@@ -88,6 +88,9 @@ if programa == "1":
             for key, value in vars(args).items():
                 f.write(f"{key}={value}\n")   
 
+        print(args)
+        print(args.num_images)
+        print(range(args.num_images))
         for i in range(args.num_images):
             dir_neb = os.path.join("neb",f'image_{i}')
             chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_neb, path_psml = path_psml)
