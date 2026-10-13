@@ -36,9 +36,9 @@ def create_dir(args):
 
         os.makedirs(dir_kp, exist_ok = True)
 
-        shutil(args.label + ".fdf", dir_kp)
-        shutil(args.label + ".XV", dir_kp)
-        shutil(args.label + ".DM", dir_kp)
+        shutil.copy(args.label + ".fdf", dir_kp)
+        shutil.copy(args.label + ".XV", dir_kp)
+        shutil.copy(args.label + ".DM", dir_kp)
 
         file_adjust(dir = dir_kp, args = args, kp = kp)
     return
