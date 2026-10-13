@@ -119,7 +119,7 @@ def run_calc(args, Images):
     for i,image in enumerate(Images):
         dir_neb = os.path.join("neb",f'image_{i}')
 
-        image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label, species = chemical.Obtain(args.label + ".fdf"), command = command_run)
+        image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label, species = chemical.Obtain(os.path.join(dir_neb,args.label + ".fdf")), command = command_run)
     
     return Images
 
@@ -144,7 +144,7 @@ def Dy_run(args, Images):
 
         command_run = ["/usr/bin/mpirun", "-np", str(args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
 
-        image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label , species = chemical.Obtain(args.label + ".fdf"), command = command_run)
+        image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label , species = chemical.Obtain(os.path.join(dir_neb,args.label + ".fdf")), command = command_run)
 
     Dy_neb_file = DyNEB(Dy_Images, k = 0.10, climb = False, dynamic_relaxation = True, method = 'improvedtangent', remove_rotation_and_translation= True)
 
@@ -168,7 +168,7 @@ def CI_run(args, Dy_Images):
 
         command_run = ["/usr/bin/mpirun", "-np", str(args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
             
-        image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label , species = chemical.Obtain(args.label + ".fdf"), command = command_run)
+        image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label , species = chemical.Obtain(os.path.join(dir_neb,args.label + ".fdf")), command = command_run)
 
     CI_neb_file = NEB(CI_Images, k = 0.10, climb = True, method = 'improvedtangent', remove_rotation_and_translation= True)
 
