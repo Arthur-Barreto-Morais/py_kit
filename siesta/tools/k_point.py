@@ -31,7 +31,7 @@ def create_dir(args):
       shutil.rmtree(dir_main)
     os.makedirs(dir_main, exist_ok = True)
     
-    for i, kp in enumerate(args.kp_points):
+    for i, kp in enumerate(args.k_points):
         dir_kp = os.path.join(dir_main,f"kp_{kp}")
 
         os.makedirs(dir_kp, exist_ok = True)
@@ -44,7 +44,8 @@ def create_dir(args):
     return
 
 def file_adjust(dir,args, kp):
-    file_path = os.path.join(dir, args.label + ".fdf")
+    file_path = os.path.join(dir, 
+    args.label + ".fdf")
 
     in_block = False
 
