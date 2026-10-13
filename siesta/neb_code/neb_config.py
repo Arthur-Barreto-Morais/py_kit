@@ -1,25 +1,5 @@
-#############################
-##-Code Idea-##
-#############################
-#1. Ajustar as configurações iniciais:
-#   1.1. Arquivos de entrada: initial.XSF e final.XSF
-#   1.2. Label name do arquivo fdf
-#   1.3. Número de imagens intermediárias N_Images + 2.
-#   1.4. Nome do diretório onde ocorre as contas.
-#2. Criar o primeiro caminho inicial (first_path.traj).
-#3. Construir os arquivos fdf para cada imagem.
-#4. Rodar o SIESTA para cada imagem.
-#5. Ler os arquivos de saída do SIESTA (Total Energy e Forces).
-#6. Rodar o NEB com os dados obtidos.
-#7. Pensar
-#---------------------------------------------------------------------------#
-
-##################
-##-Imports Used-##
-##################
-
-import chemical
-import my_calc
+from tools import chemical
+from . import my_calc
 import os 
 import shutil
 import argparse as arg
@@ -27,49 +7,87 @@ from ase.io import read as ase_read, write as ase_write
 from ase.mep import NEB, DyNEB
 from ase.optimize import BFGS
 
-#---------------------------------------------------------------------------#
+def neb_code(args):
 
-###############
-##-Main Code-##
-###############
+    Images, neb_file = Create_Images(args)
 
-parser = arg.ArgumentParser()
-parser.add_argument("-f", dest = "label", type = str, required = True)
-parser.add_argument("-n", dest = "num_images", type = int, required = True)
-parser.add_argument("-np", dest = "n_proc", type = int, required = True)
-parser.add_argument("-ci", dest = "CI_NEB", required= False, action = "store_true")
-args = parser.parse_args()
+    Create_dir(args,Images)
 
-label_file = args.label
-num_images = args.num_images -2
-n_proc = args.n_proc
-want_CI = args.CI_NEB
+    run_calc(args,Images)
+    return
 
-fdf_file = label_file + ".fdf"
+def get_parser():
+    parser = arg.ArgumentParser(prog = "NEB_Code", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used for NEB calculations", epilog= """Some Examples: """)
+    parser = arg.ArgumentParser()
+    parser.add_argument("-f", dest = "label", type = str, required = True, help = "Label of file")
+    parser.add_argument("-n", dest = "num_images", type = int, required = True, help = "Number of Images")
+    parser.add_argument("-np", dest = "n_proc", type = int, required = True, help = "Number of Processors")
+    parser.add_argument("-ci", dest = "CI_NEB", required= False, action = "store_true", help = "Enable CI-NEB calculations (Default False)")
+    return parser
+
+def Create_Images(args):
+    os.getcwd()
+
+    if not (os.path.exists('initial.XSF') and os.path.exists('final.XSF')):
+        raise Exception("Files 'initial.XSF' and/or 'final.XSF' not found")
+    
+    img_initial = 'initial.XSF'
+    xsf_initial = ase_read(img_initial, format='xsf')
+    xsf_initial.pbc = [True, True, False]
+    img_final = 'final.XSF'
+    xsf_final = ase_read(img_final, format='xsf')
+    xsf_final.pbc = [True, True, False]
+
+    Images = []
+
+    Images.append(xsf_initial)
+
+    for i in range(args.num_images -2):
+        image = xsf_initial.copy()
+        Images.append(image)
+
+    Images.append(xsf_final)    
+
+    neb_file = NEB(Images, k = 0.10, climb = False, method = 'improvedtangent', remove_rotation_and_translation= True)
+
+    neb_file.interpolate(mic = True)
+
+    return Images, neb_file
+
+def Create_dir(args,Images):
+    dir_main = "neb"
+
+    if os.path.exists(dir_main):
+        shutil.rmtree(dir_main)
+    os.makedirs(dir_main, exist_ok = True)
+
+    for i,image in enumerate(Images):
+        dir_neb = os.path.join(dir_main,f'image_{i}')
+
+        os.makedirs(dir_neb, exist_ok = True)
+        shutil.copy(args.label + ".fdf", dir_neb)
+
+    return
+
+def run_calc(args,Images):
+    command_run = ["/usr/bin/mpirun", "-np", str(args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
+    for i,image in enumerate(Images):
+        dir_neb = os.path.join("neb",f'image_{i}')
+
+        image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label, species = chemical.Obtain(args.label + ".fdf"), command = command_run)
+    
+    return
+
+def neb_run():
+    return
+
+def Dy_run():
+    return
+
+def CI_run():
 
 path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/"
-os.getcwd()
 
-img_initial = 'initial.XSF'
-xsf_initial = ase_read(img_initial, format='xsf')
-xsf_initial.pbc = [True, True, False]
-img_final = 'final.XSF'
-xsf_final = ase_read(img_final, format='xsf')
-xsf_final.pbc = [True, True, False]
-
-Images = []
-
-Images.append(xsf_initial)
-
-for i in range(num_images):
-    image = xsf_initial.copy()
-    Images.append(image)
-
-Images.append(xsf_final)
-
-neb_file = NEB(Images, k = 0.10, climb = False, method = 'improvedtangent', remove_rotation_and_translation= True)
-
-neb_file.interpolate(mic = True)
 
 #Obtaining the Chemical Species
 Species = chemical.Obtain(fdf_file)

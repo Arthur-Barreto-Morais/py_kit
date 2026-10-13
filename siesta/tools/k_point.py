@@ -13,7 +13,7 @@ def k_point(args):
     return args
 
 def get_parser():
-    parser = arg.ArgumentParser(prog = "FDF_Creator", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to make the k point test", epilog= """Some Examples: """)
+    parser = arg.ArgumentParser(prog = "K_Point", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to make the k point test", epilog= """Some Examples: """)
 
     parser.add_argument("-l", dest = "label", type = str, metavar = "LABEL", required = True, help = "Label of file")
     parser.add_argument("-k", dest = "k_points", nargs ="+", type=int, required = True, metavar = "k_points", help = "k_points values (in order)")
