@@ -74,7 +74,44 @@ def Create_dir(args, Images):
 
         os.makedirs(dir_neb, exist_ok = True)
         shutil.copy(args.label + ".fdf", dir_neb)
+        
+        file_adjust(args.label + ".fdf", dir_neb)
 
+    return
+
+def file_adjust(fdf_file, dir_neb):
+    new_fdf_file = os.path.join(dir_neb,fdf_file)
+    in_block = False
+
+    with open(new_fdf_file, "r") as f:
+        line = f.read().splitlines()
+
+    new_lines = []
+
+    for info in line:
+
+        if "MD.VariableCell" in info:
+            new_lines.append("MD.VariableCell False")
+            continue
+        
+        elif "MD.Steps" in info:
+            new_lines.append("MD.Steps 0")
+            continue
+
+        elif "MD.UseSaveXV" in info:
+            new_lines.append("MD.UseSaveXV False")
+            continue
+
+        elif "DM.UseSaveDM" in info:
+            new_lines.append("DM.UseSaveDM False")
+            continue
+
+        else:
+            new_lines.append(info)
+ 
+    with open(new_fdf_file, "w") as f:
+        f.write("\n".join(new_lines) + "\n")
+    
     return
 
 def run_calc(args, Images):
