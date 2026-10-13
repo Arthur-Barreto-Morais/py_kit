@@ -2,7 +2,6 @@ import os
 import shutil
 import subprocess
 import argparse as arg
-from . import chemical
 
 def k_point(args):
 
@@ -92,20 +91,20 @@ def file_adjust(dir,args, kp):
         f.write("\n".join(new_lines) + "\n")
 
 def kp_block(kp, args):
-    if args.dimension == "2":
+    if args.dimension == 2:
         block = f"""%block kgrid_Monkhorst_Pack
     {kp} 0 0 {0.5 if kp % 2 == 0 else 0.0}
     0 {kp} 0 {0.5 if kp % 2 == 0 else 0.0}
     0 0 1 0.0
 %endblock kgrid_Monkhorst_Pack"""
-    elif args.dimension == "3":
+    elif args.dimension == 3:
         block = f"""%block kgrid_Monkhorst_Pack
     {kp} 0 0 {0.5 if kp % 2 == 0 else 0.0}
     0 {kp} 0 {0.5 if kp % 2 == 0 else 0.0}
     0 0 {kp} {0.5 if kp % 2 == 0 else 0.0}
 %endblock kgrid_Monkhorst_Pack"""
     else:
-        print("ERROR, Choose 2 (2D) or 3 (3D)")
+        raise ValueError(f"Dimensão inválida: {args.dimension!r}")
     return block
 
 def run(args):
