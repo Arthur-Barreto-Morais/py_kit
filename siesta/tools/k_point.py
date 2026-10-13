@@ -109,7 +109,7 @@ def kp_block(kp, args):
 
 def run(args):
     os.getcwd()
-    for i, kp in enumerate(args.kp_points):
+    for i, kp in enumerate(args.k_points):
         dir_kp = os.path.join("kp",f"kp_{kp}")
 
         os.environ["OMP_NUM_THREADS"] = "1"
