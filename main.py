@@ -4,6 +4,9 @@ from siesta.file_creator import create
 from siesta.file_creator import options as opt
 from siesta.tools import chemical
 from siesta.tools import k_point
+from siesta.neb import neb
+
+path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/"
 
 print("Choose the program:")
 print("1 - SIESTA")
@@ -39,7 +42,7 @@ if programa == "1":
         create.Create(args)
 
         if args.elements is not None:
-            chemical.psml_find(fdf_file = args.label + ".fdf", dir = os.getcwd(), path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/")
+            chemical.psml_find(fdf_file = args.label + ".fdf", dir = os.getcwd(), path_psml = path_psml)
         
         if args.type == "bands":
             pass
@@ -64,13 +67,33 @@ if programa == "1":
 
         for i, kp in enumerate(args.k_points):
             dir_kp = os.path.join("kp",f"kp_{kp}")
-            chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_kp, path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/")
+            chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_kp, path_psml = path_psml)
         
     elif escolha == "3":
         print("path_finder ainda não implementado.")
 
     elif escolha == "4":
-        print("neb_code ainda não implementado.")
+        parser = neb.get_parser()        
+        parser.print_help()
+
+        while True:
+            linha = input("\nChoose the arguments: ")
+            try:
+                args = parser.parse_args(shlex.split(linha))
+                break
+            except SystemExit:
+                print("\nERROR.")
+
+        with open("Arguments_neb.txt", 'w') as f:
+            for key, value in vars(args).items():
+                f.write(f"{key}={value}\n")   
+
+        neb.neb_code(args)
+
+        for i, kp in range(args.num_images):
+            dir_neb = os.path.join("neb",f'image_{i}')
+            chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_neb, path_psml = path_psml)
+            
 
     else:
         print("Opção inválida.")

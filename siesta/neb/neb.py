@@ -1,4 +1,4 @@
-from tools import chemical
+from siesta.tools  import chemical
 from . import my_calc
 import os 
 import shutil
@@ -11,9 +11,17 @@ def neb_code(args):
 
     Images, neb_file = Create_Images(args)
 
-    Create_dir(args,Images)
+    Create_dir(args, Images)
 
-    run_calc(args,Images)
+    Images = run_calc(args, Images)
+
+    Images = neb_run(Images, neb_file)
+
+    Dy_Images = Dy_run(args, Images)
+
+    if args.CI_NEB:
+        CI_run(args, Dy_Images)
+    
     return
 
 def get_parser():
@@ -54,7 +62,7 @@ def Create_Images(args):
 
     return Images, neb_file
 
-def Create_dir(args,Images):
+def Create_dir(args, Images):
     dir_main = "neb"
 
     if os.path.exists(dir_main):
@@ -69,91 +77,61 @@ def Create_dir(args,Images):
 
     return
 
-def run_calc(args,Images):
+def run_calc(args, Images):
     command_run = ["/usr/bin/mpirun", "-np", str(args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
     for i,image in enumerate(Images):
         dir_neb = os.path.join("neb",f'image_{i}')
 
         image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label, species = chemical.Obtain(args.label + ".fdf"), command = command_run)
     
-    return
+    return Images
 
-def neb_run():
-    return
+def neb_run(Images, neb_file):
+    for file in ['neb_final.traj', 'neb.log', 'neb_relax.traj']:
+        if os.path.exists(file):
+            os.remove(file)
 
-def Dy_run():
-    return
+    opt = BFGS(neb_file, logfile = 'neb.log', trajectory = "neb_relax.traj")
 
-def CI_run():
+    opt.run(fmax = 1.0, steps = 300)
 
-path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/"
-
-
-#Obtaining the Chemical Species
-Species = chemical.Obtain(fdf_file)
-
-dir_neb = 'neb'
-
-if os.path.exists(dir_neb):
-    shutil.rmtree(dir_neb)
-os.makedirs(dir_neb, exist_ok = True)
-
-for i, image in enumerate(Images):
-    dir_image = os.path.join(dir_neb,f'image_{i}')
+    ase_write('neb_final.traj',Images)
     
-    os.makedirs(dir_image, exist_ok= True)
-    
-    shutil.copy(fdf_file,dir_image)
-    
-    chemical.psml_find(fdf_file,dir_image,path_psml)
+    return Images
 
-command_run =["/usr/bin/mpirun", "-np", str(n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
+def Dy_run(args, Images):
+    Dy_Images = [image.copy() for image in Images]
 
-#Neb calculation
-for i, image in enumerate(Images):
-    dir_image = os.path.join(dir_neb,f'image_{i}')
-    
-    image.calc = my_calc.Siesta(image_dir = dir_image, label_name = label_file, species = Species, command = command_run)
+    for i, image in enumerate(Dy_Images):
+        dir_neb = os.path.join("neb",f'image_{i}')
 
-for file in ['neb_final.traj', 'neb.log', 'neb_relax.traj']:
-    if os.path.exists(file):
-        os.remove(file)
+        command_run = ["/usr/bin/mpirun", "-np", str(args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
 
+        image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label , species = chemical.Obtain(args.label + ".fdf"), command = command_run)
 
-opt = BFGS(neb_file,logfile = 'neb.log',trajectory = "neb_relax.traj")
+    Dy_neb_file = DyNEB(Dy_Images, k = 0.10, climb = False, dynamic_relaxation = True, method = 'improvedtangent', remove_rotation_and_translation= True)
 
-opt.run(fmax = 1.0, steps = 300)
+    for file in ['Dy_neb_final.traj', 'Dy_neb.log', 'Dy_neb_relax.traj']:
+        if os.path.exists(file):
+            os.remove(file)
 
-ase_write('neb_final.traj',Images)
+    Dy_opt = BFGS(Dy_neb_file,logfile = 'Dy_neb.log',trajectory = "Dy_neb_relax.traj")
 
-#Dy-Neb calculation
-Dy_Images = [image.copy() for image in Images]
+    Dy_opt.run(fmax = 0.1, steps = 300)
 
-for i, image in enumerate(Dy_Images):
-    dir_image = os.path.join(dir_neb,f'image_{i}')
+    ase_write('Dy_neb_final.traj',Dy_Images)
 
-    image.calc = my_calc.Siesta(image_dir = dir_image, label_name = label_file, species = Species, command = command_run)
+    return Dy_Images
 
-Dy_neb_file = DyNEB(Dy_Images, k = 0.10, climb = False, dynamic_relaxation = True, method = 'improvedtangent', remove_rotation_and_translation= True)
-
-for file in ['Dy_neb_final.traj', 'Dy_neb.log', 'Dy_neb_relax.traj']:
-     if os.path.exists(file):
-         os.remove(file)
-
-opt = BFGS(Dy_neb_file,logfile = 'Dy_neb.log',trajectory = "Dy_neb_relax.traj")
-
-opt.run(fmax = 0.1, steps = 300)
-
-ase_write('Dy_neb_final.traj',Dy_Images)
-
-if want_CI:
-    #CI-Neb calculation
+def CI_run(args, Dy_Images):
     CI_Images = [image.copy() for image in Dy_Images]
 
     for i, image in enumerate(CI_Images):
-        dir_image = os.path.join(dir_neb,f'image_{i}')
-        
-        image.calc = my_calc.Siesta(image_dir = dir_image, label_name = label_file, species = Species, command = command_run)
+        dir_neb = os.path.join("neb",f'image_{i}')
+
+        command_run = ["/usr/bin/mpirun", "-np", str(args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
+            
+        image.calc = my_calc.Siesta(image_dir = dir_neb, label_name = args.label , species = chemical.Obtain(args.label + ".fdf"), command = command_run)
 
     CI_neb_file = NEB(CI_Images, k = 0.10, climb = True, method = 'improvedtangent', remove_rotation_and_translation= True)
 
@@ -161,8 +139,11 @@ if want_CI:
         if os.path.exists(file):
             os.remove(file)
 
-    CI_opt = BFGS(CI_neb_file,logfile = 'CI_neb.log',trajectory = "CI_neb_relax.traj")
+    CI_opt = BFGS(CI_neb_file, logfile = 'CI_neb.log',trajectory = "CI_neb_relax.traj")
 
     CI_opt.run(fmax = 0.05, steps = 300)
 
     ase_write('CI_neb_final.traj', CI_Images)
+
+    return 
+
