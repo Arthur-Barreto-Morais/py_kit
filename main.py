@@ -90,7 +90,7 @@ if programa == "1":
 
         neb.neb_code(args)
 
-        for i, kp in range(args.num_images):
+        for i in range(args.num_images):
             dir_neb = os.path.join("neb",f'image_{i}')
             chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_neb, path_psml = path_psml)
             
