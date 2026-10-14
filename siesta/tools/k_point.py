@@ -21,7 +21,7 @@ def get_parser():
     parser.add_argument("-l", dest = "label", type = str, metavar = "LABEL", required = True, help = "Label of file")
     parser.add_argument("-k", dest = "k_points", nargs ="+", type=int, required = True, metavar = "k_points", help = "k_points values (in order)")
     parser.add_argument("-n", dest = "n_proc", type = str, required = True, metavar = "N_PROC", help = "Number of Processors")
-    parser.add_argument("-d", dest = "dimension", type = int , required = True, metavar = "DIMENSION", choices = [2, 3], help = "Dimension - 2 = 2D or 3 = 3D")
+    parser.add_argument("-d", dest = "dimension", type = int , required = False, metavar = "DIMENSION", default = 2, choices = [2, 3], help = "Dimension - 2 = 2D or 3 = 3D - Default (2)")
 
     return parser
 
