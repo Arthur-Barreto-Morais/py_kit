@@ -56,7 +56,19 @@ if programa == "1":
         k_point.k_point(args, path_psml)
         
     elif escolha == "3":
-        pf.run()
+        parser = pf.get_parser()      
+        parser.print_help()
+
+        while True:
+            linha = input("\nChoose the arguments: ")
+            try:
+                args = parser.parse_args(shlex.split(linha))
+                break
+            except SystemExit:
+                print("\nERROR.")
+        
+        
+        pf.run(args)
 
     elif escolha == "4":
         parser = neb.get_parser()        

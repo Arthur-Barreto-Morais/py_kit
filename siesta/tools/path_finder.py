@@ -1,4 +1,6 @@
 import numpy as np
+import os
+import argparse as arg
 from ase.io import read
 from ase.geometry import Cell, cellpar_to_cell
 from ase.dft.kpoints import parse_path_string
@@ -59,10 +61,20 @@ def rhombic_labels(cell, bands, pbc):
     sp = {"G": sp["G"], "X": X, "M": (X + A1) / 2, "H": A1, "Y": sp["Y"]}
     return cell.bandpath("GXMHYG", pbc=pbc, special_points=sp)
 
-def run():
+def get_parser():
+    parser = arg.ArgumentParser(prog = "Path_Finder", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to make to obtain the high symmetry path", epilog= """Some Examples: """)
 
-    #file = input("Arquivo.XV\n") + ".XV"
-    file = "arquivo.XV"
+    parser.add_argument("-l", dest = "label", type = str, metavar = "LABEL", required = True, help = "Label of file")
+    return parser
+
+def run(args):
+
+    file = args.label + ".XV"
+
+    if not os.path.isfile(file):
+        print(f"Error: no {file} file")
+        os._exit(1)
+
     atoms = read(file, format="siesta-xv")
 
     cte_a, cte_b, cte_c, ang_a, ang_b, ang_g = atoms.cell.cellpar()
