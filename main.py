@@ -1,10 +1,6 @@
 import shlex
 import os
-from siesta.file_creator import create
-from siesta.file_creator import options as opt
-from siesta.tools import chemical
-from siesta.tools import k_point
-from siesta.neb import neb
+from siesta import create, options as opt, k_point, neb
 
 path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/"
 
@@ -39,13 +35,7 @@ if programa == "1":
             for key, value in vars(args).items():
                 f.write(f"{key}={value}\n")
         
-        create.Create(args)
-
-        if args.elements is not None:
-            chemical.psml_find(fdf_file = args.label + ".fdf", dir = os.getcwd(), path_psml = path_psml)
-        
-        if args.type == "bands":
-            pass
+        create.Create(args,os.getcwd(),path_psml)
 
     elif escolha == "2":
         parser = k_point.get_parser()
@@ -64,10 +54,6 @@ if programa == "1":
                 f.write(f"{key}={value}\n")
 
         k_point.k_point(args, path_psml)
-
-        for i, kp in enumerate(args.k_points):
-            dir_kp = os.path.join("kp",f"kp_{kp}")
-            chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_kp, path_psml = path_psml)
         
     elif escolha == "3":
         print("path_finder ainda não implementado.")

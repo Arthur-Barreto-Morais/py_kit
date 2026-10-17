@@ -1,6 +1,7 @@
 from . import writer as wt
+from siesta.tools import chemical
 
-def Create(args):
+def Create(args,dir,path_psml):
     fdf_file = args.label + ".fdf"
 
     with open(fdf_file, 'w') as f:
@@ -24,4 +25,7 @@ def Create(args):
         f.write(wt.Re_Run_Info(args)+"\n"+"\n")
 
         f.write(wt.Write_Output(args)+"\n"+"\n")
+
+        if args.elements is not None:
+            chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir, path_psml = path_psml)    
     return

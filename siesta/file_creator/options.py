@@ -19,7 +19,7 @@ def Build_Parser():
 
     input = parser.add_argument_group("Important Configurations")
 
-    input.add_argument("-t", dest = "type", type = str, required = False, metavar = "TYPE", choices = ["opt","bands","phonons","dynamic"], help = "Some Pattern Configurations [opt, bands, dynamic]")
+    input.add_argument("-t", dest = "type", type = str, required = False, metavar = "TYPE", choices = ["opt","bands","phonons","dm"], help = "Some Pattern Configurations [opt, bands, dm (dynamic)]")
     input.add_argument("-n", dest = "num_atoms", type = int, required = False, help = "Number of Atoms")
     input.add_argument("-run", dest = "run_type", type = str, required = False, metavar = "RUN_TYPE", default = "CG", choices = ["CG", "Broyden", "FIRE", "Nose", "FC"], help = "Types of Run - Default (CG) - [CG, Broyden, FIRE, Nose, FC]")
     input.add_argument("-el", dest = "elements", nargs ="+", required = False, metavar = "ELEMENT", help = "Elements (In order)")

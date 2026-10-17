@@ -43,7 +43,7 @@ AtomicCoordinatesFormat {"Fractional" if args.Fin == "F" else "Ang"}
 AtomCoorFormatOut {"Fractional" if args.Fout == "F" else "Ang"}
 
 #Type of movement for the unitary cell: True (Cell can move), False (Cell is fixed)
-MD.VariableCell {"False" if args.type == "bands" or args.type == "dynamic" or args.cell_fixed == False else "True"}
+MD.VariableCell {"False" if args.type == "bands" or args.type == "dm" or args.cell_fixed == False else "True"}
 
 #Constrain atoms or/and cell-vectors:
 %block Geometry.Constraints
@@ -123,8 +123,8 @@ Spin {"polarized" if args.spin_polarized == True else "non-polarized"}
 %block kgrid_Monkhorst_Pack     
 #Last value related to the k point value :0.5 (odd) or 0.0 (even)
 # For 3D cells, also change the last line
-{args.k_point} 0 0 {0.5 if args.k_point % 2 == 0 else 0.0}   
-0 {args.k_point} 0 {0.5 if args.k_point % 2 == 0 else 0.0}   
+{args.k_point if args.type != "dm" else 1} 0 0 {0.5 if args.k_point % 2 == 0 and args.type != "dm" else 0.0}   
+0 {args.k_point if args.type != "dm" else 1} 0 {0.5 if args.k_point % 2 == 0 and args.type != "dm" else 0.0}   
 0 0 1 0.0   
 %endblock kgrid_Monkhorst_Pack"""
 
@@ -153,7 +153,7 @@ SCF.Mixer.Restart.Save 4
 SCF.DM.Tolerance {args.scf_crit}"""
 
 def MD_Info(args):
-    if args.type == "dynamic":
+    if args.type == "dm":
         args.run_type = "Nose"
         MD_Info_aux = f"""############################################################MD Informations############################################################
 
@@ -231,7 +231,7 @@ WriteCoorStep True
 
 #Write all Molecular Dynamics (MD) informations:
 # {args.label}.MD and {args.label}.MDE files
-WriteMDHistory {"True" if args.type == "opt" or args.type == "dynamic" else "False"}
+WriteMDHistory {"True" if args.type == "opt" or args.type == "dm" else "False"}
 
 ------------------------------------------------Forces and Orbitals------------------------------------------------
 
