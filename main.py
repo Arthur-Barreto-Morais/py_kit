@@ -1,6 +1,6 @@
 import shlex
 import os
-from siesta import create, options as opt, k_point, neb
+from siesta import create, options as opt, k_point, neb, path_finder as pf
 
 path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/"
 
@@ -12,7 +12,7 @@ programa = input("\nOpção: ").strip()
 
 if programa == "1":
     print("\nChoose the operation:")
-    print("1 - Criar arquivo fdf")
+    print("1 - Create fdf file")
     print("2 - K_point")
     print("3 - path_finder")
     print("4 - neb_code")
@@ -56,7 +56,7 @@ if programa == "1":
         k_point.k_point(args, path_psml)
         
     elif escolha == "3":
-        print("path_finder ainda não implementado.")
+        pf.run()
 
     elif escolha == "4":
         parser = neb.get_parser()        
