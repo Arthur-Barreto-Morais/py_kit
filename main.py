@@ -1,6 +1,6 @@
 import shlex
 import os
-from siesta import create, options as opt, k_point, neb, path_finder as pf
+from siesta import create, options as opt, k_point, neb, path_finder as pf, input_info as ii
 
 path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/"
 
@@ -37,6 +37,8 @@ if programa == "1":
         
         create.Create(args,os.getcwd(),path_psml)
 
+        if os.path.exists("vec.dat") and os.path.exists("pos.dat"):
+            ii.(args)
     elif escolha == "2":
         parser = k_point.get_parser()
         parser.print_help()
@@ -66,7 +68,6 @@ if programa == "1":
                 break
             except SystemExit:
                 print("\nERROR.")
-        
         
         pf.run(args)
 
