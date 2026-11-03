@@ -1,6 +1,6 @@
 import shlex
 import os
-from siesta import create, options as opt, k_point, neb, path_finder as pf, input_info as ii
+from siesta import create, options as opt, k_point, neb, path_finder as pf, input_info as ii, chemical
 
 path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/"
 
@@ -28,6 +28,7 @@ if programa == "1":
             try:
                 args = parser.parse_args(shlex.split(linha))
                 break
+
             except SystemExit:
                 print("\nERROR.")
 
@@ -37,8 +38,17 @@ if programa == "1":
         
         create.Create(args,os.getcwd(),path_psml)
 
-        if os.path.exists("vec.dat") and os.path.exists("pos.dat"):
-            ii.(args)
+        if os.path.exists(f"{args.label}.XSF"):
+            var_num, var_elements = ii.get_XSF(args)
+
+            if os.path.exists("vec.dat") and os.path.exists("pos.dat"):
+                ii.add_vec(args)
+                ii.add_pos(args)
+
+            if args.num_atoms or args.elements is None:
+                ii.add_nums(args, var_num, var_elements)
+                chemical.Pos_elements(args)
+
     elif escolha == "2":
         parser = k_point.get_parser()
         parser.print_help()

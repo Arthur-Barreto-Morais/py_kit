@@ -1,4 +1,4 @@
-import periodictable
+import periodictable as pt
 
 def Label_of_System(args):
     return f"""############################################################Label of System############################################################ 
@@ -12,7 +12,7 @@ def Input_Parameters(args):
         num_species = len(elements)
         species = "" 
         for i,element in enumerate(elements):
-            species += f" {i+1} {periodictable.elements.symbol(element).number} {element}\n"
+            species += f" {i+1} {pt.elements.symbol(element).number} {element}\n"
     else:
         num_species = "num_species"
         species = "\n"
