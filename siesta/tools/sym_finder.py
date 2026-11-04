@@ -83,7 +83,7 @@ def analisar(atoms, symprec):
 def main():
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("xv", help="arquivo .XV do SIESTA")
+    p.add_argument("-xv", help="arquivo .XV do SIESTA")
     p.add_argument("--symprec", type=float, nargs="+", default=DEFAULT_SYMPRECS,
                    help="tolerância(s) de simetria em Å (padrão: 1e-5 ... 1e-1)")
     p.add_argument("--dim", type=int, choices=[2, 3], default=None,
