@@ -1,7 +1,7 @@
 import periodictable as pt
 
 def Label_of_System(args):
-    return f"""############################################################Label of System############################################################ 
+    return f"""############Label of System############ 
              
 SystemName {args.label}     
 SystemLabel {args.label}"""
@@ -16,7 +16,7 @@ def Input_Parameters(args):
     else:
         num_species = "num_species"
         species = "\n"
-    return f"""############################################################Input Parameters############################################################        
+    return f"""############Input Parameters############        
 
 NumberOfAtoms {args.num_atoms if args.num_atoms is not None else "num_atoms"}
 NumberOfSpecies {num_species}
@@ -34,7 +34,7 @@ NumberOfSpecies {num_species}
 #%endblock PAO.Polarization.Scheme"""
 
 def Structural_Info(args):
-    return f"""############################################################Structural Informations############################################################
+    return f"""############Structural Informations############
 
 #Format of the atomic coordinates input: Ang (Angstroms), Fractional (Fractional coordinates)
 AtomicCoordinatesFormat {"Fractional" if args.Fin == "F" else "Ang"}
@@ -46,13 +46,13 @@ AtomCoorFormatOut {"Fractional" if args.Fout == "F" else "Ang"}
 MD.VariableCell {"False" if args.type == "bands" or args.type == "dm" or args.cell_fixed == False else "True"}
 
 #Constrain atoms or/and cell-vectors:
-%block Geometry.Constraints
+#%block Geometry.Constraints
 # Examples:
 # 1- Constrain all Carbon atoms: Z 6
 # 2- Constrain the cell-vector c: cell-vector c
 # 3- Constrain the movement of one atom in the xy-plane (Z-fixed): atom 1 0. 0. 1.
 
-%endblock Geometry.Constraints
+#%endblock Geometry.Constraints
 
 #Cell vectors of the system
 LatticeConstant 1.00 Ang
@@ -70,7 +70,7 @@ LatticeConstant 1.00 Ang
 %endblock AtomicCoordinatesAndAtomicSpecies"""
 
 def Bands_and_DOS_Info(args):
-    return f"""############################################################Bands and DOS Informations############################################################
+    return f"""############Bands and DOS Informations############
 
 #Specifies the scale of the k vectors in the band lines
 BandLinesScale ReciprocalLatticeVectors
@@ -99,7 +99,7 @@ BandLinesScale ReciprocalLatticeVectors
 %endblock LocalDensityOfStates"""
 
 def Theoretical_Info(args):
-    return f"""############################################################Theoretical Informations############################################################
+    return f"""############Theoretical Informations############
 
 #Exchange-Correlation functional
 XC.Functional GGA 
@@ -129,7 +129,7 @@ Spin {"polarized" if args.spin_polarized == True else "non-polarized"}
 %endblock kgrid_Monkhorst_Pack"""
 
 def SCF_Info(args):
-    return f"""############################################################SCF Informations############################################################
+    return f"""############SCF Informations############
 
 #All Self Consistent Field (SCF) parameters can be found in the manual, but this configuration is a good estimate for most systems.
 
@@ -155,7 +155,7 @@ SCF.DM.Tolerance {args.scf_crit}"""
 def MD_Info(args):
     if args.type == "dm":
         args.run_type = "Nose"
-        MD_Info_aux = f"""############################################################MD Informations############################################################
+        MD_Info_aux = f"""############MD Informations############
 
 #MD - Molecular Dynamics
 
@@ -170,7 +170,7 @@ MD.InitialTemperature {args.temperature_initial} K
 MD.TargetTemperature {args.temperature_target} K
 MD.NoseMass 100 Ry*fs**2"""
     else:
-        MD_Info_aux = f"""############################################################MD Informations############################################################
+        MD_Info_aux = f"""############MD Informations############
 
 #MD - Molecular Dynamics
 
@@ -189,14 +189,14 @@ MD.MaxForceTol {args.md_crit} eV/Ang"""
     return MD_Info_aux
 
 def Grimme_Info(args):
-    return f"""############################################################Grimmes-D3 Informations############################################################
+    return f"""############Grimmes-D3 Informations############
 
 DFTD3 {"True" if args.Grimme_D3 is not None else "False"}
 DFTD3.UseXCDefaults {"True" if args.Grimme_D3 is not None else "False"}
 DFTD3.BJdamping {"True" if args.Grimme_D3 is not None else "False"}"""
 
 def Re_Run_Info(args):
-    return f"""############################################################Re-Run Output Informations############################################################
+    return f"""############Re-Run Output Informations############
 
 #Enable use the {args.label}.XV file for re-run calculations
 MD.UseSaveXV {"True" if args.save_xv else "False"}
@@ -205,14 +205,14 @@ MD.UseSaveXV {"True" if args.save_xv else "False"}
 DM.UseSaveDM {"False" if not args.no_save_dm else "True"}"""
 
 def Write_Output(args):
-    return f"""############################################################Write Output Informations############################################################
+    return f"""############Write Output Informations############
 
 #All informations about the output can be obtained in the manual.
 
 #Increase the output informations
 LongOutput True
 
-------------------------------------------------Structure and Coordinates------------------------------------------------
+#--------------Structure and Coordinates--------------#
 
 #Write the {args.label}.xyz file
 WriteCoor.Xmol True
@@ -233,7 +233,7 @@ WriteCoorStep True
 # {args.label}.MD and {args.label}.MDE files
 WriteMDHistory {"True" if args.type == "opt" or args.type == "dm" else "False"}
 
-------------------------------------------------Forces and Orbitals------------------------------------------------
+#--------------Forces and Orbitals--------------#
 
 #Write the atomic forces, {args.label}.FA file
 WriteForces True
@@ -244,7 +244,7 @@ Write.OrbitalIndex False
 #Write some orbital informations in the output file
 WriteOrbMom False
 
-------------------------------------------------Hamiltonian and Density Matrix (DM)------------------------------------------------
+#--------------Hamiltonian and Density Matrix (DM)--------------#
 
 #Write the DM, {args.label}.DM file
 Write.DM True
@@ -252,7 +252,7 @@ Write.DM True
 #Write the Hamiltonian and Overlap Matrices (HS), {args.label}.HSX file - Must be true for Bands and DOS calculations?
 SaveHS {"True" if args.type == "bands" else "False"}
 
-------------------------------------------------Eigenvalues, Bands and Wavefunctions------------------------------------------------
+#--------------Eigenvalues, Bands and Wavefunctions--------------#
 
 #Write the Hamiltonian bands eigenvalues, {args.label}.bands file - Must be true for Bands calculations
 WriteBands {"True" if args.type == "bands" else "False"}
@@ -269,7 +269,7 @@ WriteKpoints false
 #Write the Kpoints related to the bands calculation in the output file.
 WriteKBands false
 
-------------------------------------------------Electronic Populations------------------------------------------------
+#-------------Electronic Populations--------------#
 
 #Write Mulliken population, values can be 0, 1, 2 or 3 (see manual)
 WriteMullikenPop 1
@@ -284,7 +284,7 @@ Write.VoronoiPop True
 #{args.label}.fullBZ.WFSX and {args.label}.HSX files
 COOP.Write False
 
-------------------------------------------------Others Write Options------------------------------------------------
+#--------------Others Write Options--------------#
 
 #Write.Graphviz
 #Write.DM.end.of.cycle
