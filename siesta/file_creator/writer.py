@@ -46,13 +46,13 @@ AtomCoorFormatOut {"Fractional" if args.Fout == "F" else "Ang"}
 MD.VariableCell {"False" if args.type == "bands" or args.type == "dm" or args.cell_fixed == False else "True"}
 
 #Constrain atoms or/and cell-vectors:
-#%block Geometry.Constraints
+%block Geometry.Constraints
 # Examples:
 # 1- Constrain all Carbon atoms: Z 6
 # 2- Constrain the cell-vector c: cell-vector c
 # 3- Constrain the movement of one atom in the xy-plane (Z-fixed): atom 1 0. 0. 1.
-
-#%endblock Geometry.Constraints
+cell-vector c #Comment this in case of non-2D systems.
+%endblock Geometry.Constraints
 
 #Cell vectors of the system
 LatticeConstant 1.00 Ang
