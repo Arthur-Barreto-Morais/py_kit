@@ -31,7 +31,7 @@ def Build_Parser():
 
     stored = parser.add_argument_group("Stored Configurations - Add this informations switch the Default (True -> False or False -> True)")
 
-    stored.add_argument("-cm", dest = "cell_fixed", required = False, action = "store_false", help = "Enable Cell Fixed - Default (True) (MD.VariableCell True)")
+    stored.add_argument("-cf", dest = "cell_fixed", required = False, action = "store_false", help = "Enable Cell Fixed - Default (True) (MD.VariableCell True)")
     stored.add_argument("-s", dest = "spin_polarized", required = False, action = "store_true", help = "Enable spin polarized - Default (non-polarized)")
     stored.add_argument("-d3", dest = "Grimme_D3", required = False, action = "store_true", help = "Enable Grimme D3(BJ) dispersion corrections - Default (False)")
     stored.add_argument("-sv", dest = "no_save_dm", required = False, action = "store_false", help = "Do not use saved density matrix - Default (True) (DM.UseSaveDM True)")

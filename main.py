@@ -48,6 +48,7 @@ if programa == "1":
             if args.num_atoms or args.elements is None:
                 ii.add_nums(args, var_num, var_elements)
                 chemical.Pos_elements(args)
+                chemical.psml_find(f"{args.label}.fdf", os.getcwd(),path_psml)
 
     elif escolha == "2":
         parser = k_point.get_parser()
