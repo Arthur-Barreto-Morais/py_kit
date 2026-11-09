@@ -1,5 +1,5 @@
 from . import writer as wt
-from siesta.tools import chemical
+from siesta.tools import chemical, path_finder as pf
 
 def Create(args,dir,path_psml):
     fdf_file = args.label + ".fdf"
@@ -12,7 +12,9 @@ def Create(args,dir,path_psml):
         f.write(wt.Structural_Info(args)+"\n"+"\n")
 
         if args.type == "bands":
-            f.write(wt.Bands_and_DOS_Info(args)+"\n"+"\n")
+            args.info = False
+            path_block = pf.run(args)
+            f.write(wt.Bands_and_DOS_Info(args, path_block)+"\n"+"\n")
 
         f.write(wt.Theoretical_Info(args)+"\n"+"\n")
 

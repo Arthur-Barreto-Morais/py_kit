@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import argparse as arg
-from ase.io import read
+from ase.io import read, write
 from ase.geometry import Cell, cellpar_to_cell
 from ase.dft.kpoints import parse_path_string
 
@@ -65,17 +65,70 @@ def get_parser():
     parser = arg.ArgumentParser(prog = "Path_Finder", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to make to obtain the high symmetry path", epilog= """Some Examples: """)
 
     parser.add_argument("-l", dest = "label", type = str, metavar = "LABEL", required = True, help = "Label of file")
+    parser.add_argument("-p", dest = "info", required = False, action = "store_true", help = "Print the information of the cell and the path") 
+
     return parser
 
 def run(args):
 
-    file = args.label + ".XV"
+    bohr = 0.529177210903
 
-    if not os.path.isfile(file):
-        print(f"Error: no {file} file")
+    xv_file = args.label + ".XV"
+    xsf_file = args.label + ".XSF"
+
+    if os.path.isfile(xv_file):
+        file = xv_file
+        atoms = read(file, format="siesta-xv")
+
+    elif os.path.isfile(xsf_file):
+        file = xsf_file
+        atoms = read(file, format="xsf")
+
+        # =============== XSF -> XV ===============
+
+        species = {}
+
+        with open(xv_file, "w") as f:
+
+            # Lattice vectors (Bohr)
+            for vector in atoms.cell:
+                values = np.concatenate((
+                    vector / bohr,
+                    [0.0, 0.0, 0.0]
+                ))
+
+                f.write(" ".join(f"{x:20.9f}" for x in values) + "\n")
+
+            # Number of atoms
+            f.write(f"{len(atoms):12d}\n")
+
+            # Atomic coordinates and velocities
+            for atom in atoms:
+
+                if atom.symbol not in species:
+                    species[atom.symbol] = len(species) + 1
+
+                pos = atom.position / bohr
+
+                values = [
+                    species[atom.symbol],
+                    atom.number,
+                    *pos,
+                    0.0, 0.0, 0.0
+                ]
+
+                f.write(
+                    f"{values[0]:3d}{values[1]:6d}"
+                    + "".join(f"{x:20.9f}" for x in values[2:])
+                    + "\n"
+                )
+
+        # Read converted XV
+        atoms = read(xv_file, format="siesta-xv")
+
+    else:
+        print(f"Error: no {xv_file} or {xsf_file} file")
         os._exit(1)
-
-    atoms = read(file, format="siesta-xv")
 
     cte_a, cte_b, cte_c, ang_a, ang_b, ang_g = atoms.cell.cellpar()
     R0 = atoms.cell.array.copy()
@@ -110,13 +163,12 @@ def run(args):
 
     cell = Cell(R)
 
-    print("Parâmetros da célula:", cell.cellpar())
-    print("Vetor a:", cell[0])
-    print("Vetor b:", cell[1])
-    if pbc[2] == False:
-        print("PBC: 2D", pbc)
-    elif pbc[2] == True:
-        print("PBC: 3D", pbc)
+    if args.info:
+        print("Parâmetros da célula:",[f"{x:.3f}" for x in cell.cellpar()])
+        if pbc[2] == False:
+            print("PBC: 2D", pbc)
+        elif pbc[2] == True:
+            print("PBC: 3D", pbc)
 
     bands = cell.bandpath(pbc=pbc)
 
@@ -128,9 +180,9 @@ def run(args):
             bands = rhombic_labels(cell, bands, pbc)
 
     path = bands.path
-
-    print("Caminho ASE:", path)
-    print("Tipo de ponto:", bands.special_points)
+    if args.info:
+        print("Caminho ASE:", path)
+        print("Tipo de ponto:", {k: [f"{x:.6f}" for x in v]for k, v in bands.special_points.items()})
 
     segments = parse_path_string(path)
 
@@ -138,10 +190,14 @@ def run(args):
     is_gamma = lambda l: "Γ" if l == "G" else l
 
     print()
+    path_block = ""
     for s, seg in enumerate(segments):
         if s > 0:
             print()
-        for l in seg:
+        for i, l in enumerate(seg):
             k = bands.special_points[l]
-            print(f"{is_gamma(l):<3}{k[0]:>11.6f}{k[1]:>11.6f}{k[2]:>11.6f}")
-    return
+            n = 1 if s == 0 and i == 0 else 100
+            path_block += f"{n:<4}{k[0]:>10.3f} {k[1]:>7.3f} {k[2]:>7.3f} {is_gamma(l)}\n"   
+        print(path_block)
+
+    return (path_block if not args.info else None) 

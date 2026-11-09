@@ -69,7 +69,7 @@ LatticeConstant 1.00 Ang
 0.00 0.00 0.00 1
 %endblock AtomicCoordinatesAndAtomicSpecies"""
 
-def Bands_and_DOS_Info(args):
+def Bands_and_DOS_Info(args, path_block):
     return f"""############Bands and DOS Informations############
 
 #Specifies the scale of the k vectors in the band lines
@@ -80,7 +80,7 @@ BandLinesScale ReciprocalLatticeVectors
 %block BandLines
 #k_point HSP_x HSP_y HSP_Z HSP_Symbol
 # Example: 1 0.000 0.000 0.000 G #(Gamma)
-
+{path_block}
 %endblock BandLines
 
 #These block are related with the Density of States (DOS) and Projected Density of States (PDOS)
@@ -88,15 +88,14 @@ BandLinesScale ReciprocalLatticeVectors
 #Min_Energy Max_Energy Broadening Num_Points Unit
 #We can start the line using EF (Fermi Energy) 
 # Example: EF -10.00 10.00 0.0500 10000 eV  
-
+EF -10.00 10.00 0.0500 10000 eV 
 %endblock ProjectedDensityOfStates
 
 #These block are related with the Local Density of States (LDOS)
-%block LocalDensityOfStates
+#%block LocalDensityOfStates
 #Min_Energy Max_Energy Unit
 # Example: EF -2.0 2.0 eV
-
-%endblock LocalDensityOfStates"""
+#%endblock LocalDensityOfStates"""
 
 def Theoretical_Info(args):
     return f"""############Theoretical Informations############
