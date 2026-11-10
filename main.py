@@ -2,7 +2,7 @@ import shlex
 import os
 from siesta import create, options as opt, k_point, neb, path_finder as pf, input_info as ii, chemical
 
-path_psml = "~/Siesta_Standart_psml/Scalar_Relativistic/"
+path_psml = os.path.join("Siesta_Standart_psml", "Scalar_Relativistic")
 
 print("Choose the program:")
 print("1 - SIESTA")
