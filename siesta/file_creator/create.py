@@ -1,6 +1,8 @@
 from . import writer as wt
-from siesta.tools import chemical, path_finder as pf
-
+from siesta.tools import chemical, path_finder as pf, phonopy as ph
+import subprocess
+import shlex
+ 
 def Create(args,dir,path_psml):
     fdf_file = args.label + ".fdf"
 
@@ -29,5 +31,32 @@ def Create(args,dir,path_psml):
         f.write(wt.Write_Output(args)+"\n"+"\n")
 
         if args.elements is not None:
-            chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir, path_psml = path_psml)    
+            chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir, path_psml = path_psml)  
+
+    if args.type == "pho":
+        Create_Phonon(args, path_psml) 
+
+    return
+
+def Create_Phonon(args, path_psml):
+    fdf_file = "header.fdf"
+
+    with open(fdf_file, 'w') as f:
+        f.write(wt.Write_Header(args)+"\n"+"\n")     
+
+    parser = ph.get_parser()
+    parser.print_help()      
+
+    print()
+
+    while True:
+        linha = input("\nChoose the arguments: ")
+        try:
+            ph_args = parser.parse_args(shlex.split(linha))
+            break
+        except SystemExit:
+            print("\nERROR.")         
+
+    ph.Phonopy(args, ph_args, path_psml)
+
     return

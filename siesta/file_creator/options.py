@@ -14,12 +14,12 @@ def Build_Parser():
 
     required = parser.add_argument_group("Required Configurations")
 
-    required.add_argument("-l", dest = "label", type = str, required = True, help = "Label of file")
-    required.add_argument("-k", dest = "k_point", type = int, required = True, help = "Quantity of K points in Monkhorst-Pack grid")
+    required.add_argument("-l", dest = "label", type = str, required = True, metavar = "LABEL", help = "Label of file")
+    required.add_argument("-t", dest = "type", type = str, required = True, metavar = "TYPE", choices = ["opt","bands","pho","dm"], help = "Some Pattern Configurations [opt, bands, pho (phonons), dm (dynamic)]")
 
     input = parser.add_argument_group("Important Configurations")
 
-    input.add_argument("-t", dest = "type", type = str, required = False, metavar = "TYPE", choices = ["opt","bands","pho","dm"], help = "Some Pattern Configurations [opt, bands, pho (phonons), dm (dynamic)]")
+    input.add_argument("-k", dest = "k_point", type = int, required = False, default = 1, help = "Quantity of K points in Monkhorst-Pack grid")
     input.add_argument("-n", dest = "num_atoms", type = int, required = False, help = "Number of Atoms")
     input.add_argument("-run", dest = "run_type", type = str, required = False, metavar = "RUN_TYPE", default = "CG", choices = ["CG", "Broyden", "FIRE", "Nose", "FC"], help = "Types of Run - Default (CG) - [CG, Broyden, FIRE, Nose, FC]")
     input.add_argument("-el", dest = "elements", nargs ="+", required = False, metavar = "ELEMENT", help = "Elements (In order)")

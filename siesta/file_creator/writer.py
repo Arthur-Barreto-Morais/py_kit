@@ -122,8 +122,8 @@ Spin {"polarized" if args.spin_polarized == True else "non-polarized"}
 %block kgrid_Monkhorst_Pack     
 #Last value related to the k point value :0.5 (odd) or 0.0 (even)
 # For 3D cells, also change the last line
-{args.k_point if args.type != "dm" else 1} 0 0 {0.5 if args.k_point % 2 == 0 and args.type != "dm" else 0.0}   
-0 {args.k_point if args.type != "dm" else 1} 0 {0.5 if args.k_point % 2 == 0 and args.type != "dm" else 0.0}   
+{args.k_point if args.type != "dm" and args.type != "pho" else 1} 0 0 {0.5 if args.k_point % 2 == 0 and args.type != "dm" else 0.0}   
+0 {args.k_point if args.type != "dm" and args.type != "pho" else 1} 0 {0.5 if args.k_point % 2 == 0 and args.type != "dm" else 0.0}   
 0 0 1 0.0   
 %endblock kgrid_Monkhorst_Pack"""
 
@@ -177,7 +177,7 @@ MD.NoseMass 100 Ry*fs**2"""
 MD.TypeOfRun {args.run_type}
 
 #Max atomic optimization step
-MD.Steps {args.steps if not args.type == "bands" else 0}
+MD.Steps {args.steps if args.type != "bands" and args.type != "pho" else 0}
 
 #Max atomic displacements in an optimization step
 MD.MaxDispl 0.1 Ang
@@ -307,3 +307,59 @@ COOP.Write False
 #SaveInitialChargeDensity
 
 #Write.Denchar"""
+
+def Write_Header(args):
+    if args.elements is not None:
+        elements = args.elements
+        num_species = len(elements)
+        species = "" 
+        for i,element in enumerate(elements):
+            species += f" {i+1} {pt.elements.symbol(element).number} {element}\n"
+    else:
+        num_species = "num_species"
+        species = "\n"
+    return f"""############Write Header Informations############        
+SystemName {args.label}     
+SystemLabel {args.label}
+
+NumberOfAtoms {args.num_atoms if args.num_atoms is not None else "num_atoms"}
+NumberOfSpecies {num_species}
+
+%block ChemicalSpeciesLabel     
+{species}%endblock ChemicalSpeciesLabel
+
+XC.Functional GGA 
+XC.Authors PBE
+
+PAO.BasisSize {args.basis_size}
+MeshCutoff {args.mesh_cutoff} Ry
+
+Spin {"polarized" if args.spin_polarized == True else "non-polarized"}
+
+
+SolutionMethod diagon
+SCF.Mixer.Method pulay
+ElectronicTemperature 300 K
+MaxSCFIterations 1000
+SCF.Mixer.Weight 0.25
+SCF.Mixer.History 10
+SCF.Mixer.Restart 30
+SCF.Mixer.Kick 100
+SCF.Mixer.Kick.Weight 0.5
+SCF.Mixer.Restart.Save 4
+SCF.DM.Tolerance {args.scf_crit}
+
+MD.TypeOfRun CG
+MD.Steps 0
+
+MD.UseSaveXV False
+DM.UseSaveDM False
+
+%block kgrid_Monkhorst_Pack
+  1  0  0  0.0
+  0  1  0  0.0
+  0  0  1  0.0
+%endblock kgrid_Monkhorst_Pack
+
+WriteMullikenPop 0
+WriteForces True"""
