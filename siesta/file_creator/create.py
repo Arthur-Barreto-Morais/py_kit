@@ -55,6 +55,11 @@ def Create_Phonon(args, path_psml):
 
     ph.Phonopy(args, ph_args, path_psml)
     var_num, var_elements = ii.get_XSF(args.label)
+    if ph_args.dimension == 2:
+        var_num = var_num * ph_args.replication * ph_args.replication 
+    elif ph_args.dimension == 3:
+        var_num = var_num * ph_args.replication * ph_args.replication * ph_args.replication
+        
     ii.add_nums("header", var_num, var_elements)
     chemical.Pos_elements(args)
 
