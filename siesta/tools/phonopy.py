@@ -1,9 +1,13 @@
 import argparse as arg
 import subprocess
+import glob
+import os
+import shutil
 
 def Phonopy(args,ph_args, path_psml):
 
     run(args, ph_args)
+    create_dir()
     return
 
 def get_parser():
@@ -26,4 +30,25 @@ def run(args, ph_args):
         return
     subprocess.run(command, check=True)
     
+    return
+
+def create_dir():
+    files = glob.glob("supercell-*.fdf")
+    psml_files = glob.glob("*.psml")
+
+    for file in files:
+        # Extrai o número da supercell
+        number = os.path.basename(file).split("-")[1].split(".")[0]
+
+        # Cria o diretório
+        directory = f"sc_{number}"
+        os.makedirs(directory, exist_ok=True)
+
+        # Move o arquivo FDF
+        shutil.move(file, os.path.join(directory, file))
+
+        # Copia os arquivos PSML
+        for psml in psml_files:
+            shutil.copy2(psml, directory)
+
     return
