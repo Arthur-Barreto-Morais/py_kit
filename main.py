@@ -1,5 +1,6 @@
 import shlex
 import os
+#from py_kit.siesta.file_creator.create import Create_Phonon
 from siesta import create, options as opt, k_point, neb, path_finder as pf, input_info as ii, chemical
 
 path_psml = os.path.join(os.path.dirname(__file__), "siesta", "Siesta_Standart_psml", "Scalar_Relativistic")
@@ -50,6 +51,8 @@ if programa == "1":
                 chemical.Pos_elements(args)
                 chemical.psml_find(f"{args.label}.fdf", os.getcwd(),path_psml)
 
+        if args.type == "pho":
+            create.Create_Phonon(args, path_psml)
     elif escolha == "2":
         parser = k_point.get_parser()
         parser.print_help()

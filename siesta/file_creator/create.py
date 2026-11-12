@@ -33,9 +33,6 @@ def Create(args,dir,path_psml):
         if args.elements is not None:
             chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir, path_psml = path_psml)  
 
-    if args.type == "pho":
-        Create_Phonon(args, path_psml) 
-
     return
 
 def Create_Phonon(args, path_psml):
