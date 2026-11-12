@@ -1,5 +1,5 @@
 from . import writer as wt
-from siesta.tools import chemical, path_finder as pf, phonopy as ph
+from siesta.tools import chemical, path_finder as pf, phonopy as ph, input_info as ii
 import shlex
  
 def Create(args,dir,path_psml):
@@ -54,5 +54,7 @@ def Create_Phonon(args, path_psml):
             print("\nERROR.")         
 
     ph.Phonopy(args, ph_args, path_psml)
-
+    var_num, var_elements = ii.get_XSF(args)
+    ii.add_nums(args, var_num, var_elements)
+    chemical.Pos_elements(args)
     return
