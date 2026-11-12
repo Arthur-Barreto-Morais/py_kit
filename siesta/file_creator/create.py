@@ -1,6 +1,5 @@
 from . import writer as wt
 from siesta.tools import chemical, path_finder as pf, phonopy as ph
-import subprocess
 import shlex
  
 def Create(args,dir,path_psml):
