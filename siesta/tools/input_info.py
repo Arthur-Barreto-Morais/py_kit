@@ -109,13 +109,20 @@ def check_right_hand(*args):
             for line in f.readlines()
         ]
 
-    # Verifica a orientação dos vetores a e b
-    det = vectors[0][0]*vectors[1][1] - vectors[0][1]*vectors[1][0]
+    a, b, c = vectors
+
+    # Calcula o determinante
+    det = (
+        a[0]*(b[1]*c[2] - b[2]*c[1])
+        - b[0]*(a[1]*c[2] - a[2]*c[1])
+        + c[0]*(a[1]*b[2] - a[2]*b[1])
+    )
 
     if abs(det) < 1e-10:
         raise ValueError("Invalid lattice: determinant is zero.")
 
     if det < 0:
+        # Inverte o segundo vetor
         vectors[1] = [-x for x in vectors[1]]
         print("Left-handed cell detected. Vector b inverted.")
 
