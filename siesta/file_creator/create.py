@@ -54,7 +54,7 @@ def Create_Phonon(args, path_psml):
             print("\nERROR.")         
 
     ph.Phonopy(args, ph_args, path_psml)
-    var_num, var_elements = ii.get_XSF(args.label)
+    var_num, var_elements = ii.get_XSF(args)
     print(var_num)
     if ph_args.dimension == 2:
         var_num = var_num * ph_args.replication * ph_args.replication 
