@@ -47,7 +47,7 @@ if programa == "1":
             if os.path.exists("pos.dat"):
                 os.remove("pos.dat")
 
-            var_num, var_elements = ii.get_XSF(args.label)
+            var_num, var_elements = ii.get_XSF(args)
 
             if os.path.exists("vec.dat") and os.path.exists("pos.dat"):
                 ii.check_right_hand(args)

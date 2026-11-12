@@ -1,7 +1,7 @@
 import periodictable as pt
 
-def get_XSF(label):
-    with open(f"{label}.XSF", 'r') as f:
+def get_XSF(args):
+    with open(f"{args.label}.XSF", 'r') as f:
         lines = [line.strip() for line in f.readlines()]
 
     vectors = lines[4:7]
