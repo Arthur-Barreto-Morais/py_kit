@@ -54,7 +54,7 @@ def Create_Phonon(args, path_psml):
             print("\nERROR.")         
 
     ph.Phonopy(args, ph_args, path_psml)
-    var_num, var_elements = ii.get_XSF("header")
+    var_num, var_elements = ii.get_XSF(args.label)
     ii.add_nums("header", var_num, var_elements)
     chemical.Pos_elements(args)
 
