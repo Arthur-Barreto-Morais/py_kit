@@ -43,6 +43,7 @@ if programa == "1":
             var_num, var_elements = ii.get_XSF(args)
 
             if os.path.exists("vec.dat") and os.path.exists("pos.dat"):
+                ii.check_right_hand(args)
                 ii.add_vec(args)
                 ii.add_pos(args)
 

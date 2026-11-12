@@ -101,3 +101,34 @@ def add_nums(args, num_atoms, num_elements):
             break
     with open(f"{args.label}.fdf", 'w') as f:
         f.writelines(lines)
+
+def check_right_hand(*args):
+    with open("vec.dat", 'r') as f:
+        vectors = [
+            [float(x) for x in line.split()]
+            for line in f.readlines()
+        ]
+
+    # Verifica a orientação dos vetores a e b
+    det = vectors[0][0]*vectors[1][1] - vectors[0][1]*vectors[1][0]
+
+    if abs(det) < 1e-10:
+        raise ValueError("Invalid lattice: determinant is zero.")
+
+    if det < 0:
+        vectors[1] = [-x for x in vectors[1]]
+        print("Left-handed cell detected. Vector b inverted.")
+
+    else:
+        print("Right-handed cell. No changes required.")
+
+    # Salva os vetores corrigidos
+    with open("vec.dat", 'w') as f:
+        for vector in vectors:
+            f.write(
+                f"{vector[0]:15.8f} "
+                f"{vector[1]:15.8f} "
+                f"{vector[2]:15.8f}\n"
+            )
+
+    return
