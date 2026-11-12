@@ -40,22 +40,22 @@ if programa == "1":
         create.Create(args,os.getcwd(),path_psml)
 
         if os.path.exists(f"{args.label}.XSF"):
-            
+
             if os.path.exists("vec.dat"):
                 os.remove("vec.dat")
 
             if os.path.exists("pos.dat"):
                 os.remove("pos.dat")
 
-            var_num, var_elements = ii.get_XSF(args)
+            var_num, var_elements = ii.get_XSF(args.label)
 
             if os.path.exists("vec.dat") and os.path.exists("pos.dat"):
                 ii.check_right_hand(args)
-                ii.add_vec(args)
-                ii.add_pos(args)
+                ii.add_vec(args.label)
+                ii.add_pos(args.label)
 
             if args.num_atoms or args.elements is None:
-                ii.add_nums(args, var_num, var_elements)
+                ii.add_nums(args.label, var_num, var_elements)
                 chemical.Pos_elements(args)
                 chemical.psml_find(f"{args.label}.fdf", os.getcwd(),path_psml)
 

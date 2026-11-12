@@ -1,7 +1,7 @@
 import periodictable as pt
 
-def get_XSF(args):
-    with open(f"{args.label}.XSF", 'r') as f:
+def get_XSF(label):
+    with open(f"{label}.XSF", 'r') as f:
         lines = [line.strip() for line in f.readlines()]
 
     vectors = lines[4:7]
@@ -29,8 +29,8 @@ def get_XSF(args):
             f.write(f"{float(x):15.8f} {float(y):15.8f} {float(z):15.8f} {element_index:5d} {i+1:5d} {element:>5s}\n")
     return int(num_atom), int(len(elements))
 
-def add_vec(args):
-    with open(f"{args.label}.fdf", 'r') as f:
+def add_vec(label):
+    with open(f"{label}.fdf", 'r') as f:
         lines = f.readlines()
 
     new_lines = []
@@ -54,12 +54,12 @@ def add_vec(args):
         if not in_block:
             new_lines.append(line)
     
-    with open(f"{args.label}.fdf", 'w') as f:
+    with open(f"{label}.fdf", 'w') as f:
         f.writelines(new_lines)
     return
 
-def add_pos(args):
-    with open(f"{args.label}.fdf", 'r') as f:
+def add_pos(label):
+    with open(f"{label}.fdf", 'r') as f:
         lines = f.readlines()
 
     new_lines = []
@@ -83,12 +83,12 @@ def add_pos(args):
         if not in_block:
             new_lines.append(line)
     
-    with open(f"{args.label}.fdf", 'w') as f:
+    with open(f"{label}.fdf", 'w') as f:
         f.writelines(new_lines)
     return
 
-def add_nums(args, num_atoms, num_elements):
-    with open(f"{args.label}.fdf", 'r') as f:
+def add_nums(label, num_atoms, num_elements):
+    with open(f"{label}.fdf", 'r') as f:
         lines = f.readlines()
 
     for i, line in enumerate(lines):
@@ -99,7 +99,7 @@ def add_nums(args, num_atoms, num_elements):
         if "NumberOfSpecies" in line:
             lines[i] = f"NumberOfSpecies {num_elements}\n"
             break
-    with open(f"{args.label}.fdf", 'w') as f:
+    with open(f"{label}.fdf", 'w') as f:
         f.writelines(lines)
 
 def check_right_hand(*args):
