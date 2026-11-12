@@ -16,10 +16,10 @@ def get_parser():
 
 def run(args, ph_args):
     if ph_args.dimension == 2:
-        command = ["/home/abmorais/Python/.venv/bin/phonopy-init", "--siesta", "-d", f"--dim={ph_args.replication} {ph_args.replication} 1", "--pa", "1", "0", "0", "0", "1", "0", "0", "0", "1", "-c", f"{args.label}.fdf"]
+        command = ["phonopy-init", "--siesta", "-d", f"--dim={ph_args.replication} {ph_args.replication} 1", "--pa", "1", "0", "0", "0", "1", "0", "0", "0", "1", "-c", f"{args.label}.fdf"]
 
     elif ph_args.dimension == 3:
-        command = [f"/home/abmorais/Python/.venv/bin/phonopy-init", "--siesta", "-d", f"--dim={ph_args.replication} {ph_args.replication} {ph_args.replication}", "--pa", "1", "0", "0", "0", "1", "0", "0", "0", "1", "-c", f"{args.label}.fdf"]
+        command = [f"phonopy-init", "--siesta", "-d", f"--dim={ph_args.replication} {ph_args.replication} {ph_args.replication}", "--pa", "1", "0", "0", "0", "1", "0", "0", "0", "1", "-c", f"{args.label}.fdf"]
     
     else:
         print("ERROR: Invalid dimension. Please choose 2 or 3.")
