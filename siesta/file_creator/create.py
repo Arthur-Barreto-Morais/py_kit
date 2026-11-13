@@ -53,7 +53,6 @@ def Create_Phonon(args, path_psml):
         except SystemExit:
             print("\nERROR.")         
 
-    ph.Phonopy(args, ph_args, path_psml)
     var_num, var_elements = ii.get_XSF(args)
     if ph_args.dimension == 2:
         var_num = var_num * ph_args.replication * ph_args.replication 
@@ -62,5 +61,6 @@ def Create_Phonon(args, path_psml):
 
     ii.add_nums("header", var_num, var_elements)
     chemical.Pos_elements(args)
+    ph.Phonopy(args, ph_args, path_psml)
 
     return

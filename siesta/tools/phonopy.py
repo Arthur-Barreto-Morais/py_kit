@@ -4,11 +4,11 @@ import glob
 import os
 import shutil
 
-def Phonopy(args,ph_args, path_psml):
+def Phonopy(args, ph_args, path_psml):
 
     create_input(args, ph_args)
     create_dir()
-    run_siesta(ph_args)
+    run_siesta(args, ph_args)
     return
 
 def get_parser():
@@ -55,10 +55,11 @@ def create_dir():
 
     return
 
-def run_siesta(ph_args):
+def run_siesta(args, ph_args):
     directory = [d for d in glob.glob("sc*") if os.path.isdir(d)]
     for dir in directory:
         dir_num = dir.split("_")[1]
+
         file1 = "header.fdf"
         file2 = os.path.join(dir, f"supercell-{dir_num}.fdf")
 
@@ -68,4 +69,5 @@ def run_siesta(ph_args):
             f.write(info)
 
         #command_run = ["/usr/bin/mpirun", "-np", str(ph_args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
-
+ 
+    return
