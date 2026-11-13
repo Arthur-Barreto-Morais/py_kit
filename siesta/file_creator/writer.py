@@ -319,8 +319,8 @@ def Write_Header(args):
         num_species = "num_species"
         species = "\n"
     return f"""############Write Header Informations############        
-SystemName {args.label}     
-SystemLabel {args.label}
+SystemName input  
+SystemLabel input  
 
 NumberOfAtoms {args.num_atoms if args.num_atoms is not None else "num_atoms"}
 NumberOfSpecies {num_species}

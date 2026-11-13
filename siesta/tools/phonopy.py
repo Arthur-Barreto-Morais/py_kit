@@ -69,6 +69,7 @@ def run_siesta(args, ph_args):
             f.write(info)
 
         command_run = ["/usr/bin/mpirun", "-np", str(ph_args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
+        
         os.environ["OMP_NUM_THREADS"] = "1"
 
         fdf_aux = os.path.join(dir,"input.fdf")
