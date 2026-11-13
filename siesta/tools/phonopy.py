@@ -68,6 +68,13 @@ def run_siesta(args, ph_args):
         with open(os.path.join(dir,"input.fdf"), 'w') as f:
             f.write(info)
 
-        #command_run = ["/usr/bin/mpirun", "-np", str(ph_args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
- 
+        command_run = ["/usr/bin/mpirun", "-np", str(ph_args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
+        os.environ["OMP_NUM_THREADS"] = "1"
+
+        fdf_aux = os.path.join(dir,"input.fdf")
+        out_aux = os.path.join(dir,"log.out")
+        
+        with open(out_aux, 'w') as f_out, open(fdf_aux, 'r') as f_in:
+            subprocess.run(command_run, cwd =dir, stdin =f_in, stdout =f_out, stderr =subprocess.STDOUT, check =True)
+    
     return
