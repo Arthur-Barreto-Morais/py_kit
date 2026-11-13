@@ -1,6 +1,5 @@
 import shlex
 import os
-#from py_kit.siesta.file_creator.create import Create_Phonon
 from siesta import create, options as opt, k_point, neb, path_finder as pf, input_info as ii, chemical
 
 path_psml = os.path.join(os.path.dirname(__file__), "siesta", "Siesta_Standart_psml", "Scalar_Relativistic")
