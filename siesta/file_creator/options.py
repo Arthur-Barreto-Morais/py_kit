@@ -72,6 +72,3 @@ def Build_Parser():
     dynamic.add_argument("-Tgt", dest = "temperature_target", type = int, required = False, default = 300, help = "Target Temperature of Dynamic Simulation - Default (300)")
 
     return parser
-
-#def Options(argv = None):
-#    return Build_Parser().parse_args(argv)
