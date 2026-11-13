@@ -8,6 +8,7 @@ def Phonopy(args,ph_args, path_psml):
 
     create_input(args, ph_args)
     create_dir()
+    run_siesta(ph_args)
     return
 
 def get_parser():
