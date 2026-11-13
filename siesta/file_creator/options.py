@@ -1,12 +1,29 @@
 import argparse as arg
 
 def Build_Parser():
-    parser = arg.ArgumentParser(prog = "FDF_Creator", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to create FDF files for SIESTA code at several configurations", epilog= """Some Examples: 
-    1: Run optimization with GrimmeD3 and Dipole Correction activated:
-        -l Label -k K_Point -t opt -d3 -dc
-        
-    2: Run bands with spin polarized optmization:
-        -l Label -k K_Point -t bands -s 
+    """Gets the calculation settings, provided by the user, saving the information within a parser variable"""
+
+    parser = arg.ArgumentParser(prog = "FDF_Creator", formatter_class = arg.RawDescriptionHelpFormatter, 
+    description = "Program used to create FDF files for SIESTA code at several configurations", 
+    epilog= """Some Examples: 
+    1: Run optimization calculation with spin polarization and 10 k-poins:
+        -l label -t opt -s -k 10
+    
+    2: Run bands calculation with GrimmeD3(BJ), MeshCutoff equal to 900 Ry and Slab Dipole Correction:
+        -l label -t bands -d3 -dc -mesh 900
+
+    3:
+        -l label -t
+
+    4:
+        -l label -t
+
+    5:
+        -l label -t
+
+    6:
+        -l label -t
+
         """)
 
     #######################################################################################################################################################################
@@ -56,6 +73,5 @@ def Build_Parser():
 
     return parser
 
-
-def Options(argv = None):
-    return Build_Parser().parse_args(argv)
+#def Options(argv = None):
+#    return Build_Parser().parse_args(argv)
