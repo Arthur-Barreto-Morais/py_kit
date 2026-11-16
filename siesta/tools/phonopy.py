@@ -122,7 +122,7 @@ def pos_run(args,ph_args):
         f.write(f"BAND_POINTS = {ph_args.points} \n")
         f.write(f"BAND_LABELS = {labels} \n")
 
-    command = ["phonopy-init",  "--siesta", "-f", "sc_*/input.FA"]
+    command = ["phonopy-init", "--siesta", "-f", *sorted(glob.glob(f"sc_*/input.FA"))]
     subprocess.run(command, check=True)
 
     command = ["phonopy", "-p", "-s", "--config", "band.conf"]
