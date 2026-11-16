@@ -95,7 +95,13 @@ def pos_run(args,ph_args):
     lines = bands_block.split("\n")[:-1]
 
     for line in lines:
-
-        print(line)
         
+        num = line[0]
+        bands += line[1:4]
+        labels += line[4]
+
+    print(num)
+    print(bands)
+    print(labels)
+
     return
