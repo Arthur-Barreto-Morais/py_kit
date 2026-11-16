@@ -118,9 +118,19 @@ def pos_run(args,ph_args):
             f.write(f"DIM = {ph_args.replication} {ph_args.replication} {ph_args.replication} \n")
 
         f.write("PRIMITIVE_AXIS = 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 \n")
-
         f.write(f"BAND = {bands} \n")
         f.write(f"BAND_POINTS = {ph_args.points} \n")
         f.write(f"BAND_LABELS = {labels} \n")
 
+    command = ["phonopy-init",  "--siesta", "-f", "sc_*/input.FA"]
+    subprocess.run(command, check=True)
+
+    command = ["phonopy", "-p", "-s", "--config", "band.conf"]
+    subprocess.run(command, check=True)
+
+    command = ["phonopy-bandplot", "--gnuplot", "band.yaml", ">", "band.dat"]
+    subprocess.run(command, check=True)
+
+    command = ["phonopy-bandplot", "band.yaml", "-o", "band.pdf"]
+    subprocess.run(command, check=True)
     return
