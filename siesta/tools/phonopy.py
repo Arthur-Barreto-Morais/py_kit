@@ -17,7 +17,7 @@ def get_parser():
 
     parser = arg.ArgumentParser(prog = "PhonoPy", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to choose PhonoPy Configurations", epilog= """Some Examples: """)
     parser.add_argument("-d", dest = "dimension", type = int , required = True, metavar = "DIMENSION", default = 2, choices = [2, 3], help = "Dimension - 2 = 2D or 3 = 3D - Default (2)")
-    parser.add_argument("-r", dest = "replication", type = int , required = True, metavar = "REPETITION", choices = [1, 2, 3, 4, 5, 6, 7, 8], help = "Quantity of Replication of Unit Cell")
+    parser.add_argument("-r", dest = "replication", type = int , required = True, metavar = "REPETITION", choices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], help = "Quantity of Replication of Unit Cell")
     parser.add_argument("-p", dest = "points", type = int , required = False, metavar = "NUMBER_OF_POINTS", default= 200, help = "Number of points in phonon band calculation - Default (60)")
     parser.add_argument("-n", dest = "n_proc", type = int , required = False, metavar = "NUMBER_OF_PROCESSES", default = 16, help = "Number of processes to use - Default (16)")
 
@@ -27,11 +27,11 @@ def create_input(args, ph_args):
 
     if ph_args.dimension == 2:
 
-        command = ["phonopy-init", "--siesta", "-d", f"--dim={ph_args.replication} {ph_args.replication} 1", "--pa", "1", "0", "0", "0", "1", "0", "0", "0", "1", "-c", f"{args.label}.fdf"]
+        command = ["phonopy-init", "--siesta", "-d", f"--dim={ph_args.replication} {ph_args.replication} 1", "--pa", "auto", "-c", f"{args.label}.fdf"]
 
     elif ph_args.dimension == 3:
 
-        command = [f"phonopy-init", "--siesta", "-d", f"--dim={ph_args.replication} {ph_args.replication} {ph_args.replication}", "--pa", "1", "0", "0", "0", "1", "0", "0", "0", "1", "-c", f"{args.label}.fdf"]
+        command = [f"phonopy-init", "--siesta", "-d", f"--dim={ph_args.replication} {ph_args.replication} {ph_args.replication}", "--pa", "auto", "-c", f"{args.label}.fdf"]
     
     else:
 
@@ -117,7 +117,7 @@ def pos_run(args,ph_args):
 
             f.write(f"DIM = {ph_args.replication} {ph_args.replication} {ph_args.replication} \n")
 
-        f.write("PRIMITIVE_AXIS = 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 \n")
+        #f.write("PRIMITIVE_AXIS = 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 \n")
         f.write(f"BAND = {bands} \n")
         f.write(f"BAND_POINTS = {ph_args.points} \n")
         f.write(f"BAND_LABELS = {labels} \n")
