@@ -92,14 +92,19 @@ def pos_run(args,ph_args):
 
     args.info = False
     bands_block = pf.run(args)
-    lines = bands_block.split("\n")[:-1]
+    lines = bands_block.strip().split("\n")
+
+    num = []
+    bands = []
+    labels = []
 
     for line in lines:
 
         line = line.split()
-        num = line[0]
-        bands += line[1:4]
-        labels += line[4]
+
+        num.append(int(line[0]))
+        bands.append([float(x) for x in line[1:4]])
+        labels.append(line[4])
 
     print(num)
     print(bands)
