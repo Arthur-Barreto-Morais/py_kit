@@ -5,19 +5,23 @@ import argparse as arg
 from . import chemical
 
 def k_point(args, path_psml):
-
+    """Main code for k points calculations"""
+    
     create_dir(args)
 
     for kp in args.k_points:
+    
         dir_kp = os.path.join("kp",f"kp_{kp}")
         chemical.psml_find(fdf_file = args.label + ".fdf", dir = dir_kp, path_psml = path_psml)
+    
     run(args)
 
-    return args
+    return
 
 def get_parser():
-    parser = arg.ArgumentParser(prog = "K_Point", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to make the k point test", epilog= """Some Examples: """)
+    """Gets the calculation settings, provided by the user, saving the information within a parser variable"""
 
+    parser = arg.ArgumentParser(prog = "K_Point", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to make the k point test", epilog= """Some Examples: """)
     parser.add_argument("-l", dest = "label", type = str, metavar = "LABEL", required = True, help = "Label of file")
     parser.add_argument("-k", dest = "k_points", nargs ="+", type=int, required = True, metavar = "k_points", help = "k_points values (in order)")
     parser.add_argument("-n", dest = "n_proc", type = str, required = True, metavar = "N_PROC", help = "Number of Processors")
@@ -26,33 +30,38 @@ def get_parser():
     return parser
 
 def create_dir(args):
+    """Create the directories for the k points calculations"""
+
     os.getcwd()
 
     dir_main = "kp"
 
     if os.path.exists(dir_main):
+      
       shutil.rmtree(dir_main)
+
     os.makedirs(dir_main, exist_ok = True)
     
     for i, kp in enumerate(args.k_points):
+
         dir_kp = os.path.join(dir_main,f"kp_{kp}")
-
         os.makedirs(dir_kp, exist_ok = True)
-
         shutil.copy(args.label + ".fdf", dir_kp)
         shutil.copy(args.label + ".XV", dir_kp)
         shutil.copy(args.label + ".DM", dir_kp)
-
         file_adjust(dir = dir_kp, args = args, kp = kp)
+        
     return
 
 def file_adjust(dir,args, kp):
+    """ Adjust the configurations of the .FDF file for k points calculations """
+
     file_path = os.path.join(dir, 
     args.label + ".fdf")
-
     in_block = False
 
     with open(file_path, "r") as f:
+
         line = f.read().splitlines()
 
     new_lines = []
@@ -61,22 +70,27 @@ def file_adjust(dir,args, kp):
     for info in line:
 
         if "MD.VariableCell" in info:
+        
             new_lines.append("MD.VariableCell False")
             continue
         
         if "MD.Steps" in info:
+        
             new_lines.append("MD.Steps 0")
             continue
 
         if "MD.UseSaveXV" in info:
+        
             new_lines.append("MD.UseSaveXV True")
             continue
 
         if "DM.UseSaveDM" in info:
+        
             new_lines.append("DM.UseSaveDM False")
             continue
 
         if "%block kgrid_Monkhorst_Pack" in info:
+        
             in_block = True
             new_lines.append(info)
             block = kp_block(kp, args)
@@ -84,46 +98,62 @@ def file_adjust(dir,args, kp):
             continue
 
         if "%endblock kgrid_Monkhorst_Pack" in info:
+        
             in_block = False
             new_lines.append(info)
             continue
 
         if not in_block:
+        
             new_lines.append(info)
 
     with open(file_path, "w") as f:
+        
         f.write("\n".join(new_lines) + "\n")
 
+    return
+
+
 def kp_block(kp, args):
+    """ Write the kgrid_Monkhorst_Pack block of the .FDF file for k points calculations """
+    
     if args.dimension == 2:
+    
         block = f"""%block kgrid_Monkhorst_Pack
     {kp} 0 0 {0.5 if kp % 2 == 0 else 0.0}
     0 {kp} 0 {0.5 if kp % 2 == 0 else 0.0}
     0 0 1 0.0
 %endblock kgrid_Monkhorst_Pack"""
+    
     elif args.dimension == 3:
+    
         block = f"""%block kgrid_Monkhorst_Pack
     {kp} 0 0 {0.5 if kp % 2 == 0 else 0.0}
     0 {kp} 0 {0.5 if kp % 2 == 0 else 0.0}
     0 0 {kp} {0.5 if kp % 2 == 0 else 0.0}
 %endblock kgrid_Monkhorst_Pack"""
+    
     else:
+    
         raise ValueError(f"Dimensão inválida: {args.dimension!r}")
+    
     return block
 
 def run(args):
+    """ Run the k points calculations with the help of SIESTA code"""
+
     os.getcwd()
+    
     for i, kp in enumerate(args.k_points):
+
         dir_kp = os.path.join("kp",f"kp_{kp}")
-
         os.environ["OMP_NUM_THREADS"] = "1"
-
         command = ["/usr/bin/mpirun", "-np", str(args.n_proc), "/home/usr/bin/siesta-5.0.0/MPICH2/bin/siesta"]
-
         fdf_aux = os.path.join(dir_kp,args.label + ".fdf")
         out_aux = os.path.join(dir_kp,"log.out")
             
         with open(out_aux, 'w') as f_out, open(fdf_aux, 'r') as f_in:
+
             subprocess.run(
                 command,
                 cwd =dir_kp,
@@ -132,4 +162,5 @@ def run(args):
                 stderr =subprocess.STDOUT,
                 check =True
                             )        
+    
     return

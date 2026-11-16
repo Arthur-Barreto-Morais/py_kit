@@ -1,6 +1,6 @@
 import argparse as arg
 
-def Build_Parser():
+def get_parser():
     """Gets the calculation settings, provided by the user, saving the information within a parser variable"""
 
     parser = arg.ArgumentParser(prog = "FDF_Creator", formatter_class = arg.RawDescriptionHelpFormatter, 

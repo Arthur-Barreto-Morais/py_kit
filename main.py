@@ -20,7 +20,7 @@ if programa == "1":
     escolha = input("\nOption: ").strip()
 
     if escolha == "1":
-        parser = opt.Build_Parser()
+        parser = opt.get_parser()
         parser.print_help()
 
         while True:
@@ -60,6 +60,7 @@ if programa == "1":
 
         if args.type == "pho":
             create.Create_Phonon(args, path_psml)
+
     elif escolha == "2":
         parser = k_point.get_parser()
         parser.print_help()
