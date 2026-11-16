@@ -64,9 +64,9 @@ def Create_Phonon(args):
             
             print("\nERROR.")         
 
-    chemical.Pos_elements(args)
-
     var_num, var_elements = ii.get_XSF(args)
+    
+    chemical.Pos_elements(args)
 
     if ph_args.dimension == 2:
 
