@@ -90,5 +90,6 @@ def run_siesta(ph_args):
 
 def pos_run(args,ph_args):
     args.info = False
-    pf.run(args)
+    bands_block = pf.run(args)
+    print(bands_block)
     return
