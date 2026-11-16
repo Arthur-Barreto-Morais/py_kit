@@ -89,5 +89,6 @@ def run_siesta(ph_args):
     return
 
 def pos_run(args,ph_args):
+    args.info = False
     pf.run(args)
     return
