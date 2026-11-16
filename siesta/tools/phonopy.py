@@ -18,6 +18,7 @@ def get_parser():
     parser = arg.ArgumentParser(prog = "PhonoPy", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to choose PhonoPy Configurations", epilog= """Some Examples: """)
     parser.add_argument("-d", dest = "dimension", type = int , required = True, metavar = "DIMENSION", default = 2, choices = [2, 3], help = "Dimension - 2 = 2D or 3 = 3D - Default (2)")
     parser.add_argument("-r", dest = "replication", type = int , required = True, metavar = "REPETITION", choices = [1, 2, 3, 4, 5, 6, 7, 8], help = "Quantity of Replication of Unit Cell")
+    parser.add_argument("-p", dest = "points", type = int , required = False, metavar = "NUMBER_OF_POINTS", default= 60, help = "Number of points in phonon band calculation - Default (60)")
     parser.add_argument("-n", dest = "n_proc", type = int , required = False, metavar = "NUMBER_OF_PROCESSES", default = 16, help = "Number of processes to use - Default (16)")
 
     return parser
@@ -94,29 +95,31 @@ def pos_run(args,ph_args):
     bands_block = pf.run(args)
     lines = bands_block.strip().split("\n")
 
-    num_v = []
     bands_v = []
     labels_v = []
 
     for line in lines:
 
         line = line.split()
-
-        num_v.append(int(line[0]))
         bands_v.append([float(x) for x in line[1:4]])
         labels_v.append(line[4])
 
-    print(num_v)
-    print(bands_v)
-    print(labels_v)
-
-    num = num_v[-1]
-
     bands = " ".join(str(x) for row in bands_v for x in row)
-
     labels = " ".join(labels_v)
 
-    print(num)
-    print(bands)
-    print(labels)    
+    with open("band.conf", 'w') as f:
+
+        if ph_args.dimension == 2: 
+
+            f.write(f"DIM = {ph_args.replication} {ph_args.replication} 1")
+
+        if ph_args.dimension == 3: 
+
+            f.write(f"DIM = {ph_args.replication} {ph_args.replication} {ph_args.replication}")
+
+        f.write("PRIMITIVE_AXIS = 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0")
+
+        f.write(f"BAND = {bands}")
+        f.write(f"BAND_POINTS = {ph_args.points}")
+        f.write(f"BAND_LABELS = {labels}")
     return
