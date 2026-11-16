@@ -142,6 +142,75 @@ def Pos_elements(args):
 
         f.writelines(new_lines)
 
+    return
+
+def Pos_elements2(args):
+    """Gets the chemical species information (index, atomic number (Z) and symbol) from the "pos.dat" file, related to the .XSF file provided by the user"""
+
+    species = {}
+
+    with open("pos.dat", 'r') as f:
+        
+        for line in f:
+            
+            line = line.strip()
+
+            if not line or line.startswith("#"):
+                
+                continue
+
+            data = line.split()
+            symbol = data[5]
+
+            if symbol not in species:
+
+                number = len(species) + 1
+                Z = pt.elements.symbol(symbol).number
+
+                species[symbol] = {"Number": number,"Z": Z}
+    
+    aux_elements = ""
+    
+    for symbol, info in species.items():
+
+        Z = pt.elements.symbol(symbol).number
+        aux_elements += f"{info['Number']} {Z} {symbol}\n"
+
+
+    with open(f"{args.label}.fdf", 'r') as f:
+
+        lines = f.readlines()
+
+    new_lines = []
+    in_block = False
+
+    with open("pos.dat", 'r') as f:
+
+        pos = f.readlines()
+
+    for line in lines:
+
+        if "%block ChemicalSpeciesLabel" in line:
+
+            new_lines.append(line)
+            new_lines.extend(aux_elements)
+            in_block = True
+            continue
+        
+        if "%endblock ChemicalSpeciesLabel" in line:
+
+            new_lines.append(line)
+            in_block = False
+            continue
+        
+        if not in_block:
+
+            new_lines.append(line)
+    
+    with open(f"{args.label}.fdf", 'w') as f:
+
+        f.writelines(new_lines)
+
     if args.type == "pho":
 
         with open("header.fdf", 'r') as f:
