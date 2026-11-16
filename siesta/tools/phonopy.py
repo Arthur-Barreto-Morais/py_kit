@@ -3,6 +3,7 @@ import subprocess
 import glob
 import os
 import shutil
+import path_finder as pf
 
 def Phonopy(args, ph_args):
 
@@ -88,5 +89,5 @@ def run_siesta(ph_args):
     return
 
 def pos_run(args,ph_args):
-
+    pf.run(args)
     return
