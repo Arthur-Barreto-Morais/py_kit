@@ -8,7 +8,7 @@ def Phonopy(args, ph_args):
 
     create_input(args, ph_args)
     create_dir()
-    #run_siesta(ph_args)
+    run_siesta(ph_args)
 
     return
 
@@ -85,4 +85,8 @@ def run_siesta(ph_args):
 
             subprocess.run(command_run, cwd =dir, stdin =f_in, stdout =f_out, stderr =subprocess.STDOUT, check =True)
     
+    return
+
+def pos_run(args,ph_args):
+
     return
