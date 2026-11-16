@@ -129,13 +129,9 @@ def pos_run(args,ph_args):
     subprocess.run(command, check=True)
 
     command = ["phonopy-bandplot", "band.yaml"]
-
     subprocess.run(command, capture_output=True, text=True)
 
     command = ["phonopy-bandplot", "band.yaml", "-o", f"{args.label}_band.pdf"]
+    subprocess.run(command, capture_output=True, text=True)
 
-    result = subprocess.run(command, capture_output=True, text=True)
-
-    if result.returncode != 0:
-        raise RuntimeError(f"Erro ao gerar PDF:\n{result.stderr}")
     return
