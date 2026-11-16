@@ -61,7 +61,7 @@ def create_dir():
 def run_siesta(ph_args):
 
     directory = [d for d in glob.glob("sc*") if os.path.isdir(d)]
-
+    print(directory)
     for dir in directory:
 
         dir_num = dir.split("_")[1]
