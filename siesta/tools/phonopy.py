@@ -131,6 +131,9 @@ def pos_run(args,ph_args):
     command = ["phonopy-bandplot", "--gnuplot", "band.yaml", ">", "band.dat"]
     subprocess.run(command, check=True)
 
-    command = ["phonopy-bandplot", "band.yaml", "-o", "band.pdf"]
-    subprocess.run(command, check=True)
+    command = ["phonopy-bandplot", "--gnuplot", "band.yaml"]
+
+    with open("band.dat", "w") as f:
+        subprocess.run(command, stdout=f, check=True)
+        
     return
