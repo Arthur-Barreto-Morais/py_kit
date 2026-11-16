@@ -144,7 +144,7 @@ def Pos_elements(args):
 
     if args.type == "pho":
 
-        with open(f"header.fdf", 'r') as f:
+        with open(f"{args.label}.fdf", 'r') as f:
 
             lines = f.readlines()
 

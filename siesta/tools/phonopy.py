@@ -8,7 +8,7 @@ def Phonopy(args, ph_args):
 
     create_input(args, ph_args)
     create_dir()
-    run_siesta(ph_args)
+    #run_siesta(ph_args)
 
     return
 
