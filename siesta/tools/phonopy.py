@@ -89,7 +89,13 @@ def run_siesta(ph_args):
     return
 
 def pos_run(args,ph_args):
+
     args.info = False
     bands_block = pf.run(args)
-    print(bands_block)
+    lines = bands_block.split("\n")[:-1]
+
+    for line in lines:
+
+        print(line)
+        
     return
