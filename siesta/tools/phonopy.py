@@ -111,15 +111,16 @@ def pos_run(args,ph_args):
 
         if ph_args.dimension == 2: 
 
-            f.write(f"DIM = {ph_args.replication} {ph_args.replication} 1")
+            f.write(f"DIM = {ph_args.replication} {ph_args.replication} 1 \n")
 
         if ph_args.dimension == 3: 
 
-            f.write(f"DIM = {ph_args.replication} {ph_args.replication} {ph_args.replication}")
+            f.write(f"DIM = {ph_args.replication} {ph_args.replication} {ph_args.replication} \n")
 
-        f.write("PRIMITIVE_AXIS = 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0")
+        f.write("PRIMITIVE_AXIS = 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 \n")
 
-        f.write(f"BAND = {bands}")
-        f.write(f"BAND_POINTS = {ph_args.points}")
-        f.write(f"BAND_LABELS = {labels}")
+        f.write(f"BAND = {bands} \n")
+        f.write(f"BAND_POINTS = {ph_args.points} \n")
+        f.write(f"BAND_LABELS = {labels} \n")
+
     return
