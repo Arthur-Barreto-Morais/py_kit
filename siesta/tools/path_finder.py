@@ -224,7 +224,7 @@ def run(args):
         for i, l in enumerate(seg):
             k = bands.special_points[l]
             n = 1 if s == 0 and i == 0 else 100
-            path_block += f"{n:<4}{k[0]:>10.3f} {k[1]:>7.3f} {k[2]:>7.3f} {is_gamma(l)}\n"   
+            path_block += f"{n:<4}{k[0]:>10.5f} {k[1]:>7.5f} {k[2]:>7.5f} {is_gamma(l)}\n"   
         print(path_block)
 
     return (path_block if not args.info else None)  
