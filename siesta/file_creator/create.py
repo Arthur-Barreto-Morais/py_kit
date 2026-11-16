@@ -64,6 +64,8 @@ def Create_Phonon(args):
             
             print("\nERROR.")         
 
+    chemical.Pos_elements(args)
+
     var_num, var_elements = ii.get_XSF(args)
 
     if ph_args.dimension == 2:
@@ -73,8 +75,6 @@ def Create_Phonon(args):
     elif ph_args.dimension == 3:
 
         var_num = var_num * ph_args.replication * ph_args.replication * ph_args.replication
-
-    chemical.Pos_elements(args)
 
     ii.add_nums("header", var_num, var_elements)
     
