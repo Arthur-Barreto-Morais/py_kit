@@ -131,10 +131,19 @@ def pos_run(args,ph_args):
     command = ["phonopy-bandplot", "--gnuplot", "band.yaml"]
 
     with open("band.dat", "w") as f:
-        result = subprocess.run(command, stdout=f, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(
+            command,
+            stdout=f,
+            stderr=subprocess.PIPE,
+            text=True
+        )
 
     if result.returncode != 0:
-        raise RuntimeError(f"Erro ao gerar band.dat:\n{result.stderr}")
+        print("Código:", result.returncode)
+        print("STDERR:", result.stderr)
+        print("STDOUT:", result.stdout)
+        print("band.yaml existe:", os.path.exists("band.yaml"))
+        raise RuntimeError("Falha ao gerar band.dat")
 
     command = ["phonopy-bandplot", "band.yaml", "-o", f"{args.label}_band.pdf"]
 
