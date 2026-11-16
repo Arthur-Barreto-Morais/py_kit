@@ -3,7 +3,7 @@ import subprocess
 import glob
 import os
 import shutil
-import path_finder as pf
+from siesta.tools import path_finder as pf
 
 def Phonopy(args, ph_args):
 
