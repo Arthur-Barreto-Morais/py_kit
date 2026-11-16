@@ -122,16 +122,24 @@ def pos_run(args,ph_args):
         f.write(f"BAND_POINTS = {ph_args.points} \n")
         f.write(f"BAND_LABELS = {labels} \n")
 
-    command = ["phonopy-init", "--siesta", "-f", *sorted(glob.glob(f"sc_*/input.FA"))]
+    command = ["phonopy-init", "--siesta", "-f", *sorted(glob.glob("sc_*/input.FA"))]
     subprocess.run(command, check=True)
 
     command = ["phonopy", "-p", "-s", "--config", "band.conf"]
     subprocess.run(command, check=True)
 
     command = ["phonopy-bandplot", "--gnuplot", "band.yaml"]
+
     with open("band.dat", "w") as f:
-        subprocess.run(command, stdout=f, check=True)
+        result = subprocess.run(command, stdout=f, stderr=subprocess.PIPE, text=True)
+
+    if result.returncode != 0:
+        raise RuntimeError(f"Erro ao gerar band.dat:\n{result.stderr}")
 
     command = ["phonopy-bandplot", "band.yaml", "-o", f"{args.label}_band.pdf"]
-    subprocess.run(command, check=True)
+
+    result = subprocess.run(command, capture_output=True, text=True)
+
+    if result.returncode != 0:
+        raise RuntimeError(f"Erro ao gerar PDF:\n{result.stderr}")
     return
