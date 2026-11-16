@@ -39,7 +39,7 @@ def Create(args,dir,path_psml):
 
     return
 
-def Create_Phonon(args, path_psml):
+def Create_Phonon(args):
     """ This function construct the "header.fdf" file, necessary for phonon calculations"""
 
     fdf_file = "header.fdf"
@@ -78,6 +78,6 @@ def Create_Phonon(args, path_psml):
 
     chemical.Pos_elements(args)
     
-    ph.Phonopy(args, ph_args, path_psml)
+    ph.Phonopy(args, ph_args)
 
     return

@@ -59,7 +59,7 @@ if programa == "1":
                 chemical.psml_find(f"{args.label}.fdf", os.getcwd(),path_psml)
 
         if args.type == "pho":
-            create.Create_Phonon(args, path_psml)
+            create.Create_Phonon(args)
 
     elif escolha == "2":
         parser = k_point.get_parser()
