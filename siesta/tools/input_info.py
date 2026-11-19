@@ -140,7 +140,7 @@ def add_nums(label, num_atoms, num_elements):
 
     return
 
-def check_right_hand(*args):
+def check_right_hand(args):
     """Verify if the arrangement of lattice vectors follow the right hand rule. That necessity stems from phonopy code (https://phonopy.github.io/phonopy/index.html)"""
 
     with open("vec.dat", 'r') as f:
