@@ -18,7 +18,7 @@ def get_parser():
     parser = arg.ArgumentParser(prog = "PhonoPy", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to choose PhonoPy Configurations", epilog= """Some Examples: """)
     parser.add_argument("-d", dest = "dimension", type = int , required = True, metavar = "DIMENSION", default = 2, choices = [2, 3], help = "Dimension - 2 = 2D or 3 = 3D - Default (2)")
     parser.add_argument("-r", dest = "replication", type = int , required = True, metavar = "REPETITION", choices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], help = "Quantity of Replication of Unit Cell")
-    parser.add_argument("-p", dest = "points", type = int , required = False, metavar = "NUMBER_OF_POINTS", default= 200, help = "Number of points in phonon band calculation - Default (60)")
+    parser.add_argument("-p", dest = "points", type = int , required = False, metavar = "NUMBER_OF_POINTS", default= 200, help = "Number of points in phonon band calculation - Default (200)")
     parser.add_argument("-n", dest = "n_proc", type = int , required = False, metavar = "NUMBER_OF_PROCESSES", default = 16, help = "Number of processes to use - Default (16)")
 
     return parser
@@ -92,7 +92,10 @@ def run_siesta(ph_args):
 def pos_run(args,ph_args):
 
     args.info = False
+    aux = args.label
+    args.label = args.label + "_sym"
     bands_block = pf.run(args)
+    args.label = aux
     lines = bands_block.strip().split("\n")
 
     bands_v = []
