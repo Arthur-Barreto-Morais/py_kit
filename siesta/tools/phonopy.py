@@ -92,7 +92,10 @@ def run_siesta(ph_args):
 def pos_run(args,ph_args):
 
     args.info = False
+    #aux = args.label
+    #args.label = args.label + "_sym"
     bands_block = pf.run(args)
+    #args.label = aux
     lines = bands_block.strip().split("\n")
 
     bands_v = []
