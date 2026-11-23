@@ -170,15 +170,15 @@ def check_right_hand(args):
             f.write(f"{vector[0]:15.8f} {vector[1]:15.8f} {vector[2]:15.8f}\n")
 
     # copia o XSF original e troca as 3 linhas abaixo de PRIMVEC
-    #with open(args.label + ".XSF", 'r') as f:
-        #lines = f.readlines()
+    with open(args.label + ".XSF", 'r') as f:
+        lines = f.readlines()
 
-    #i = next(k for k, l in enumerate(lines) if l.strip() == "PRIMVEC")
+    i = next(k for k, l in enumerate(lines) if l.strip() == "PRIMVEC")
 
-    #for j, v in enumerate(vectors):
-        #lines[i + 1 + j] = f"   {v[0]:12.7f} {v[1]:12.7f} {v[2]:12.7f}\n"
+    for j, v in enumerate(vectors):
+        lines[i + 1 + j] = f"   {v[0]:12.7f} {v[1]:12.7f} {v[2]:12.7f}\n"
 
-    #with open(args.label + "_sym.XSF", 'w') as f:
-        #f.writelines(lines)
+    with open(args.label + "_sym.XSF", 'w') as f:
+        f.writelines(lines)
         
     return
