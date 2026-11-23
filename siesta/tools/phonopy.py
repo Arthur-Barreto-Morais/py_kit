@@ -120,7 +120,7 @@ def pos_run(args,ph_args):
 
             f.write(f"DIM = {ph_args.replication} {ph_args.replication} {ph_args.replication} \n")
 
-        #f.write("PRIMITIVE_AXIS = 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 \n")
+        f.write("PRIMITIVE_AXES = P \n")
         f.write(f"BAND = {bands} \n")
         f.write(f"BAND_POINTS = {ph_args.points} \n")
         f.write(f"BAND_LABELS = {labels} \n")
