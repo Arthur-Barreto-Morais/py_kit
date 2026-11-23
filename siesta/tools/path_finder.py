@@ -88,6 +88,29 @@ def rhombic_labels(cell, bands, pbc):
 
     return cell.bandpath("GXMHYG", pbc=pbc, special_points=sp)
 
+def positive_path(cell, special_points, segments):
+
+    # Soma 1 (vetor G da rede recíproca) às componentes negativas.
+    # Só é aceito se o comprimento de todos os segmentos do caminho não mudar;
+    # caso contrário, mantém os pontos originais do ASE.
+
+    rec = cell.reciprocal()
+    orig = {l: np.array(k, float) for l, k in special_points.items()}
+    new = {l: np.where(k < -1e-8, k + 1.0, k) for l, k in orig.items()}
+
+    for seg in segments:
+
+        for l1, l2 in zip(seg[:-1], seg[1:]):
+
+            d_old = np.linalg.norm((orig[l1] - orig[l2]) @ rec)
+            d_new = np.linalg.norm((new[l1] - new[l2]) @ rec)
+
+            if abs(d_old - d_new) > 1e-6:
+
+                return orig
+
+    return new
+
 def get_parser():
 
     parser = arg.ArgumentParser(prog = "Path_Finder", formatter_class = arg.RawDescriptionHelpFormatter, description = "Program used to make to obtain the high symmetry path", epilog= """Some Examples: """)
@@ -157,6 +180,12 @@ def run(args):
         print(f"Error: no {xv_file} or {xsf_file} file")
         os._exit(1)
 
+    # mesma correção do check_right_hand: phonopy exige célula destra
+    cell0 = atoms.cell.array.copy()
+    if np.linalg.det(cell0) < 0:
+        cell0[1] *= -1
+    atoms.set_cell(cell0, scale_atoms=False)
+    
     cte_a, cte_b, cte_c, ang_a, ang_b, ang_g = atoms.cell.cellpar()
     R0 = atoms.cell.array.copy()
     C_out_plane = (np.allclose(R0[2,:2], 0.0, atol = len_crit) and np.allclose(R0[:2, 2], 0.0, atol = len_crit) and abs(R0[2, 2]) > len_crit)
@@ -213,18 +242,23 @@ def run(args):
 
     segments = parse_path_string(path)
 
+    # pontos de alta simetria com componentes positivas (equivalentes por G)
+    sp = positive_path(cell, bands.special_points, segments)
+
     # =============== SAÍDA ===============
     is_gamma = lambda l: "Γ" if l == "G" else l
 
     print()
     path_block = ""
     for s, seg in enumerate(segments):
+        seg_block = ""
         if s > 0:
             print()
         for i, l in enumerate(seg):
-            k = bands.special_points[l]
+            k = sp[l] + 0.0
             n = 1 if s == 0 and i == 0 else 100
-            path_block += f"{n:<4}{k[0]:>10.5f} {k[1]:>7.5f} {k[2]:>7.5f} {is_gamma(l)}\n"   
-        print(path_block)
+            seg_block += f"{n:<4}{k[0]:>10.5f} {k[1]:>7.5f} {k[2]:>7.5f} {is_gamma(l)}\n"
+        print(seg_block)
+        path_block += seg_block
 
-    return (path_block if not args.info else None)  
+    return (path_block if not args.info else None)
