@@ -116,7 +116,7 @@ MeshCutoff {args.mesh_cutoff} Ry
 
 #Type of dipole correction: True (Dipole correction on), False (Dipole correction off)
 #Use this in case of adsorption
-Slab.DipoleCorrection {"True" if args.dipole_correction is not None else "False"}  
+Slab.DipoleCorrection {"True" if args.dipole_correction == True else "False"}  
 
 #Type of spin polarization: non-polarized, polarized, non-collinear, spin-orbit. (Read Manual for more details)
 Spin {"polarized" if args.spin_polarized == True else "non-polarized"}
